@@ -9,30 +9,39 @@ import {
   Input,
   Card,
 } from "reactstrap";
-import SParameter from "../../Kernel/SParameter";
 import Messages from "../../../Types/Messages";
-import axios from "axios";
+//import axios from "axios";
+import ParameterComponent from "../../Common/parameter-component";
+//import { CommonTypes } from "../../../Types/Common";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as messageActions from "../../../redux/actions/message-actions";
+import * as cityCountyActions from "../../../redux/actions/city-county-actions";
+import CityComponent from "../../Common/city-component";
+import CountyComponent from "../../Common/county-component";
 
-export class DefineSiteApartment extends Component {
+class DefineSiteApartment extends Component {
   constructor(props) {
     super(props);
     this.state = {
       //site / apartman
       dataContract: {},
+      selectedCityId: 1,
+      loading: true,
     };
   }
 
   //
-  onSubmit() {
-    var user = this.state.dataContract;
-    debugger;
-    axios
-      .post(`https://localhost:23163/api/user/saveuser`, { user })
-      .then((res) => {
-        console.log(res);
-        console.log(res.data);
-      });
+  async onSubmit() {
+    // var apartment = this.state.dataContract;
+    // var url = CommonTypes.GetUrlForAPI("core", "saveapartment");
+    // await axios.post(url, apartment).then((res) => {
+    //   console.log(res);
+    //   console.log(res.data);
+    // });
   }
+
+  componentDidMount() {}
 
   render() {
     return (
@@ -41,30 +50,22 @@ export class DefineSiteApartment extends Component {
           <Row form>
             <Col>
               <FormGroup>
-                <Label>{Messages.LabelNames.recordType}</Label>
-                <SParameter paramType={"siteapt"} />
+                <ParameterComponent
+                  paramType="siteapt"
+                  labelName={Messages.LabelNames.recordType}
+                ></ParameterComponent>
               </FormGroup>
             </Col>
           </Row>
           <Row form>
             <Col md={5}>
               <FormGroup>
-                <Label for="cmbCity">{Messages.LabelNames.city}</Label>
-                <Input type="select" name="city" id="cmbCity" placeholder="">
-                  <option value={1}> Adana </option>
-                  <option value={2}> Adıyaman </option>
-                  <option value={33}> Mersin </option>
-                </Input>
+                <CityComponent />
               </FormGroup>
             </Col>
             <Col md={5}>
               <FormGroup>
-                <Label for="cmbCounty">{Messages.LabelNames.county}</Label>
-                <Input type="select" name="city" id="cmbCounty" placeholder="">
-                  <option value={1}> Erdemli </option>
-                  <option value={2}> Mezitli </option>
-                  <option value={3}> Silifke </option>
-                </Input>
+                <CountyComponent />
               </FormGroup>
             </Col>
             <Col md={2}>
@@ -87,4 +88,32 @@ export class DefineSiteApartment extends Component {
   }
 }
 
-export default DefineSiteApartment;
+function mapStateToProps(state) {
+  return {
+    cityList: state.cityReducer,
+    countyList: state.countyReducer,
+  };
+}
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      /**
+       * showStatusMessage(message, type)
+       */
+      showMessage: bindActionCreators(
+        messageActions.showStatusMessage,
+        dispatch
+      ),
+      getCityList: bindActionCreators(cityCountyActions.getCityList, dispatch),
+      getCountyList: bindActionCreators(
+        cityCountyActions.getCountyListAll,
+        dispatch
+      ),
+    },
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DefineSiteApartment);

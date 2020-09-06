@@ -12,6 +12,11 @@ import {
 import User from "../../Models/User";
 import Messages from "../../Types/Messages";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as cityActions from "../../redux/actions/city-county-actions";
+import * as loginActions from "../../redux/actions/login-actions";
+import ShowMessage from "../ShowMessage";
+import { CommonTypes } from "../../Types/Common";
 
 class Login extends Component {
   loginUserContract = new User();
@@ -29,13 +34,9 @@ class Login extends Component {
     };
   }
 
-  componentDidMount() {}
-
-  onSubmit() {
-    this.setState(
-      Object.assign({}, this.state, { dataContract: this.loginUserContract })
-    );
-    //TODO: send to backend
+  componentDidMount() {
+    //todo: kaldırılacak
+    this.props.actions.getCityList();
   }
 
   validateEmail(e) {
@@ -50,12 +51,47 @@ class Login extends Component {
   }
 
   render() {
+    let isLogin = () => {
+      var jwtObj = this.props.userContract;
+      if (jwtObj.token && jwtObj.token.length > 1) {
+        if (jwtObj.token === "null") {
+          this.props.actions.changeLoginStatus({
+            token: jwtObj.token,
+            expiration: jwtObj.expiration,
+            isSuccess: false,
+          });
+
+          return (
+            <ShowMessage
+              Message={Messages.Errors.InvalidMailOrUser}
+              MessageType={CommonTypes.MessageTypes.error}
+            />
+          );
+        }
+
+        this.props.actions.changeLoginStatus({
+          token: jwtObj.token,
+          expiration: jwtObj.expiration,
+          isSuccess: true,
+        });
+        return (
+          <ShowMessage
+            Message={Messages.Information.Success}
+            MessageType={CommonTypes.MessageTypes.success}
+          />
+        );
+      } else {
+        return <p></p>;
+      }
+    };
     return (
       <div>
         <Container className="App">
-          <div>
+          {/* <div>
             <h1>{this.props.userContract.name}</h1>
-          </div>
+            <p>eleman sayısı: {this.props.cityList.length}</p>
+            <ParameterComponent paramType={"yesno"} labelName="yes miii" />
+          </div> */}
           <Form className="form">
             <Col>
               <FormGroup>
@@ -94,8 +130,16 @@ class Login extends Component {
                 />
               </FormGroup>
             </Col>
-            <Button color={"primary"}>{Messages.ActionNames.enter}</Button>
+            <Button
+              color={"primary"}
+              onClick={(e) => {
+                this.props.actions.loginUser(this.loginUserContract);
+              }}
+            >
+              {Messages.ActionNames.enter}
+            </Button>
           </Form>
+          {isLogin()}
         </Container>
       </div>
     );
@@ -105,7 +149,21 @@ class Login extends Component {
 function mapStateToProps(state) {
   return {
     userContract: state.loginReducer,
+    cityList: state.cityReducer,
   };
 }
 
-export default connect(mapStateToProps)(Login);
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      getCityList: bindActionCreators(cityActions.getCityList, dispatch),
+      loginUser: bindActionCreators(loginActions.Login, dispatch),
+      changeLoginStatus: bindActionCreators(
+        loginActions.ChangeLoginStatus,
+        dispatch
+      ),
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

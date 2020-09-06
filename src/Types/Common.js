@@ -20,4 +20,12 @@ export class CommonTypes {
     error: "error",
     info: "info",
   };
+
+  /**
+   * cache keyleri tutulur.
+   */
+  static CacheKeys = {
+    CityList: "CITYLIST",
+    CountyList: "COUNTYLIST",
+  };
 }

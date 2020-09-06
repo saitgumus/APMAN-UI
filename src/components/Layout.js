@@ -3,8 +3,9 @@ import { Container } from "reactstrap";
 import { NavMenu } from "./NavMenu";
 import TabIn from "./Begin/TabIn";
 import Messages from "../Types/Messages";
+import { connect } from "react-redux";
 
-export class Layout extends Component {
+class Layout extends Component {
   static displayName = Layout.name;
 
   constructor(props) {
@@ -15,15 +16,15 @@ export class Layout extends Component {
   }
   render() {
     let loginControl = () => {
-      if (!this.state.isLogin) {
+      if (this.props.loginJwtObject && this.props.loginJwtObject.isSuccess) {
+        return this.props.children;
+      } else {
         return (
           <div>
             <p className={"lead"}>{Messages.PlsLogIn}</p>
             <TabIn />
           </div>
         );
-      } else {
-        return this.props.children;
       }
     };
     return (
@@ -34,3 +35,11 @@ export class Layout extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    loginJwtObject: state.changeLoginStatusReducer,
+  };
+}
+
+export default connect(mapStateToProps)(Layout);

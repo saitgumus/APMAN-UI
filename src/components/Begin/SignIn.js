@@ -16,6 +16,9 @@ import Messages from "../../Types/Messages";
 import ShowMessage from "../ShowMessage";
 import { CommonTypes } from "../../Types/Common";
 import Axios from "axios";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as registerActions from "../../redux/actions/register-actions";
 
 class SignIn extends Component {
   userContract = new User();
@@ -39,7 +42,6 @@ class SignIn extends Component {
   //#region metods
 
   submitForm() {
-    debugger;
     if (this.validateContract(this.state.dataContract)) {
       this.sendUserContract();
     } else {
@@ -53,7 +55,6 @@ class SignIn extends Component {
 
   //todo: düzenleme yapılacak.
   async sendUserContract() {
-    debugger;
     // eslint-disable-next-line
     var user = this.state.dataContract;
     await Axios.post(CommonTypes.GetUrlForAPI("user", "saveuser"), user)
@@ -165,44 +166,53 @@ class SignIn extends Component {
                 </FormGroup>
               </Col>
             </Row>
-            <Col>
-              <FormGroup>
-                <Label for="userSignEmail">{Messages.LabelNames.email}</Label>
-                <Input
-                  valid={this.state.validate.emailState === "has-success"}
-                  invalid={this.state.validate.emailState === "has-danger"}
-                  type="email"
-                  name="email"
-                  id="userSignEmail"
-                  placeholder=""
-                  onChange={(e) => {
-                    // eslint-disable-next-line
-                    this.state.dataContract.Email = e.target.value;
-                  }}
-                  onBlur={(e) => this.validateEmail(e)}
-                />
-                <FormFeedback valid={true}> {Messages.EMailValid}</FormFeedback>
-                <FormFeedback invalid={"true"}>
-                  {Messages.EMailInvalid}
-                </FormFeedback>
-                <FormText> {Messages.EMailInputFormText}</FormText>
-              </FormGroup>
-            </Col>
-            <Col>
-              <FormGroup>
-                <Label for="userPassword">{Messages.LabelNames.password}</Label>
-                <Input
-                  type="password"
-                  name="password"
-                  id="userPassword"
-                  placeholder=""
-                  onChange={(e) => {
-                    // eslint-disable-next-line
-                    this.state.dataContract.Password = e.target.value;
-                  }}
-                />
-              </FormGroup>
-            </Col>
+            <Row>
+              <Col>
+                <FormGroup>
+                  <Label for="userSignEmail">{Messages.LabelNames.email}</Label>
+                  <Input
+                    valid={this.state.validate.emailState === "has-success"}
+                    invalid={this.state.validate.emailState === "has-danger"}
+                    type="email"
+                    name="email"
+                    id="userSignEmail"
+                    placeholder=""
+                    onChange={(e) => {
+                      // eslint-disable-next-line
+                      this.state.dataContract.Email = e.target.value;
+                    }}
+                    onBlur={(e) => this.validateEmail(e)}
+                  />
+                  <FormFeedback valid={true}>
+                    {" "}
+                    {Messages.EMailValid}
+                  </FormFeedback>
+                  <FormFeedback invalid={"true"}>
+                    {Messages.EMailInvalid}
+                  </FormFeedback>
+                  <FormText> {Messages.EMailInputFormText}</FormText>
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <FormGroup>
+                  <Label for="userPassword">
+                    {Messages.LabelNames.password}
+                  </Label>
+                  <Input
+                    type="password"
+                    name="password"
+                    id="userPassword"
+                    placeholder=""
+                    onChange={(e) => {
+                      // eslint-disable-next-line
+                      this.state.dataContract.Password = e.target.value;
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
             <Button
               color={"primary"}
               onClick={(e) => {
@@ -218,10 +228,18 @@ class SignIn extends Component {
   }
 }
 
-export default SignIn;
-// UserId int [pk, increment] //auto-inc
-// FirstName varchar(50)
-// LastName varchar(30)
-// Email varchar(50)
-// Password varchar(100)
-// MemberId int
+function mapStateToProps(state) {
+  return {
+    registeredUser: state.registerReducer,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      getCityList: bindActionCreators(registerActions.registerUser, dispatch),
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

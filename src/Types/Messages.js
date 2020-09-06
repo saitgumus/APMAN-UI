@@ -32,6 +32,9 @@ export default class Messages {
     county: "İlçe",
     recordType: "Kayıt Türü",
     password: "Parola",
+    floorCount: "Kat Sayısı",
+    blockCount: "Blok Sayısı",
+    blockName: "Blok Adı",
   };
 
   static Warnings = {
@@ -40,9 +43,20 @@ export default class Messages {
     CouldNotDoProc: "İşlem başarısız.",
   };
 
+  static Information = {
+    /**
+     * işlem başarılı
+     */
+    Success: "İşlem Başarılı.",
+  };
+
   static Errors = {
     InvalidInformation: "Eksik veya hatalı bilgi girdiniz.",
     /**hata oluştu mesajı */
     AccurredAnError: "İşlem yapılırken hata meydana geldi.",
+    /**
+     * geçersiz mail veya parola
+     */
+    InvalidMailOrUser: "Geçersiz mail adresi veya parola..",
   };
 }
