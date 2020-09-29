@@ -16,10 +16,16 @@ export default class Messages {
     },
   };
 
+  static Titles = {
+    defineBlock: "Blok ekleme",
+  };
+
   static ActionNames = {
     save: "Kaydet",
     /**giriş yap */
     enter: "Giriş Yap",
+    /**ekle */
+    add: "Ekle",
   };
 
   static LabelNames = {

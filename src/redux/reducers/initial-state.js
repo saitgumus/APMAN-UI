@@ -26,6 +26,21 @@ export default {
     messageType: CommonTypes.MessageTypes.info,
     message: "initial message",
   },
+  block: {
+    siteId: -1,
+    code: "",
+  },
+  apertment: {
+    Name: "",
+  },
+  site: {
+    Name: "",
+  },
+  actionList: [],
+  executedAction: {
+    resourceCode: "",
+    key: "",
+  },
 };
 
 function initialParameter() {

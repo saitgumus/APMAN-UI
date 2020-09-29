@@ -7,6 +7,9 @@ import registerReducer from "./register-reducer";
 import changeLoginStatusReducer from "./change-login-status-reducer";
 import showMessageReducer from "./message-reducer";
 import changeSelectedCityReducer from "./change-selected-city-reducer";
+import defineBlockReducer from "./definingReducers/define-block-reducer";
+import actionListReducer from "./actionReducers/action-list-reducer";
+import actionExecuteReducer from "./actionReducers/action-execute-reducer";
 
 const rootReducer = combineReducers({
   loginReducer,
@@ -17,6 +20,9 @@ const rootReducer = combineReducers({
   changeLoginStatusReducer,
   showMessageReducer,
   changeSelectedCityReducer,
+  defineBlockReducer,
+  actionListReducer,
+  actionExecuteReducer,
 });
 
 export default rootReducer;

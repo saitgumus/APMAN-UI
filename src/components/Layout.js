@@ -1,40 +1,52 @@
-import React, { Component } from "react";
-import { Container } from "reactstrap";
-import { NavMenu } from "./NavMenu";
+import React, { useState } from "react";
+//import { Container } from "reactstrap";
+//import { NavMenu } from "./NavMenu";
 import TabIn from "./Begin/TabIn";
 import Messages from "../Types/Messages";
 import { connect } from "react-redux";
+import AppBarMenu from "./Navigation/app-bar";
+import { Container } from "@material-ui/core";
+import ActionBar from "./Navigation/action-bar";
 
-class Layout extends Component {
-  static displayName = Layout.name;
+function Layout(props) {
+  // eslint-disable-next-line
+  const [openMenu, setOpenMenu] = useState(false);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLogin: false,
-    };
-  }
-  render() {
-    let loginControl = () => {
-      if (this.props.loginJwtObject && this.props.loginJwtObject.isSuccess) {
-        return this.props.children;
-      } else {
-        return (
-          <div>
-            <p className={"lead"}>{Messages.PlsLogIn}</p>
-            <TabIn />
-          </div>
-        );
-      }
-    };
-    return (
-      <div>
-        <NavMenu />
-        <Container>{loginControl()}</Container>
-      </div>
-    );
-  }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     isLogin: false,
+  //     openMenu: false,
+  //   };
+  // }
+
+  //render() {
+  //eslint-disable-next-line
+  let loginControl = () => {
+    if (props.loginJwtObject && props.loginJwtObject.isSuccess) {
+      return props.children;
+    } else {
+      return (
+        <div>
+          <p className={"lead"}>{Messages.PlsLogIn}</p>
+          <TabIn />
+        </div>
+      );
+    }
+  };
+
+  return (
+    <div>
+      <AppBarMenu>
+        <Container maxWidth="xl">
+          <ActionBar></ActionBar>
+          {loginControl()}
+        </Container>
+      </AppBarMenu>
+    </div>
+  );
 }
+//}
 
 function mapStateToProps(state) {
   return {

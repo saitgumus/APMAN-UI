@@ -1,5 +1,9 @@
+import Messages from "./Messages";
+
 export class CommonTypes {
   static URLaddress = "https://localhost:23163";
+  static KafkaHost = "localhost:9092";
+  static KafkaTopic = "apmantest";
 
   /**
    *
@@ -28,4 +32,67 @@ export class CommonTypes {
     CityList: "CITYLIST",
     CountyList: "COUNTYLIST",
   };
+
+  /**
+   * aksiyon isimleri
+   */
+  static ActionKeys = {
+    Save: "SAVE",
+  };
+
+  /**
+   * kaynak tanımları
+   */
+  static Resources = {
+    /**
+     * site apartman ekle
+     */
+    defineSiteApartment: {
+      /**
+       * DEFAPT
+       */
+      resourceCode: "DEFAPT",
+      actionKeys: [CommonTypes.ActionKeys.Save],
+    },
+  };
+
+  /**
+   * http response status code
+   */
+  static ResponseStatusCode = {
+    successful: {
+      success: 200,
+      created: 201,
+      accepted: 202,
+      nonAuthoritative: 203,
+      noContent: 204,
+      resetContent: 205,
+      partialContent: 206,
+    },
+    clientError: {
+      badRequest: 400,
+      unAuthorized: 401,
+      paymentRequired: 402,
+      forbidden: 403,
+      notFound: 404,
+      methodNotAllowed: 405,
+    },
+    serverError: {
+      InternalServerError: 500,
+      notImplemented: 501,
+      badGateway: 502,
+      serviceUnavailable: 503,
+      gatewayTimeout: 504,
+      httpVersionNotSupported: 505,
+    },
+  };
+}
+
+export function getActionLabel(key) {
+  switch (key) {
+    case CommonTypes.ActionKeys.Save:
+      return Messages.ActionNames.save;
+    default:
+      return "action";
+  }
 }
