@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Collapse } from "reactstrap";
 import Messages from "../../../Types/Messages";
-//import axios from "axios";
+import ApartmentContract from "../../../Models/ApartmentContract";
 import ParameterComponent from "../../Common/parameter-component";
 import { CommonTypes } from "../../../Types/Common";
 import { connect } from "react-redux";
@@ -18,28 +18,32 @@ import {
   CardContent,
   List,
   ListItem,
+  Paper,
 } from "@material-ui/core";
 
-//import { blockDefinition } from "../../ToolBox/popup-block-definition";
+import { DefineSiteApartmentService } from "../../../Services/DefineSiteApartment";
+import BlockDefinition from "../../ToolBox/popup-block-definition";
 
 class DefineSiteApartment extends Component {
   constructor(props) {
     super(props);
     this.state = {
       //site / apartman
-      dataContract: {},
+      dataContract: new ApartmentContract(),
       selectedCityId: 1,
       loading: true,
       selectedParamCode: -1,
       blocks: [],
     };
+
+    this.renderForParameter = this.renderForParameter.bind(this);
   }
 
   componentDidUpdate() {
-    debugger;
-    if (this.props.actionEvent) {
+    if (this.props.actionEvent && this.props.actionEvent.key.length > 1) {
       switch (this.props.actionEvent.key) {
         case CommonTypes.ActionKeys.Save:
+          DefineSiteApartmentService(this.state.dataContract);
           break;
 
         default:
@@ -56,45 +60,20 @@ class DefineSiteApartment extends Component {
     }
   }
 
-  //
-  async onSubmit() {
-    // var apartment = this.state.dataContract;
-    // var url = CommonTypes.GetUrlForAPI("core", "saveapartment");
-    // await axios.post(url, apartment).then((res) => {
-    //   console.log(res);
-    //   console.log(res.data);
-    // });
-  }
-
   renderForParameter = () => {
     if (parseInt(this.state.selectedParamCode) > 0) {
       if (this.state.selectedParamCode === "1") {
         //site
         return (
           <Collapse isOpen={this.state.selectedParamCode === "1"}>
-            <Card>
-              <CardContent>
-                {/* <blockDefinition></blockDefinition> */}
-                <List>
-                  {this.props.blockList && this.props.blockList.length > 0 ? (
-                    this.props.blockList.map((elm, ind) => {
-                      return <ListItem> {elm.code}</ListItem>;
-                    })
-                  ) : (
-                    <ListItem></ListItem>
-                  )}
-                </List>
-              </CardContent>
-            </Card>
+            {this.siteDefinitionCard}
           </Collapse>
         );
       } else {
         //apartman
         return (
           <Collapse isOpen={this.state.selectedParamCode === "2"}>
-            <Card>
-              <CardContent>apartman bilgisi eklenecek</CardContent>
-            </Card>
+            {this.apartmentDefinitionCard}
           </Collapse>
         );
       }
@@ -102,6 +81,55 @@ class DefineSiteApartment extends Component {
       return <div></div>;
     }
   };
+
+  /**
+   * apartman tanıtım kartı
+   */
+  apartmentDefinitionCard = (
+    <Card>
+      <Paper>
+        <TextField
+          type="string"
+          label="Apartman Adı"
+          onChange={(e) => {
+            var tmpContract = new ApartmentContract();
+            tmpContract = this.state.dataContract;
+            tmpContract.name = e.target.value;
+            this.setDataContract(tmpContract);
+          }}
+        ></TextField>
+      </Paper>
+    </Card>
+  );
+
+  /**
+   * site tanıtım kartı
+   */
+  siteDefinitionCard = (
+    <Card>
+      <Paper>
+        <TextField
+          type="string"
+          label="Site Adı"
+          onChange={(e) => {
+            var tmpContract = new ApartmentContract();
+            tmpContract = this.state.dataContract;
+            tmpContract.name = e.target.value;
+            this.setDataContract(tmpContract);
+          }}
+        ></TextField>
+        <BlockDefinition></BlockDefinition>
+      </Paper>
+    </Card>
+  );
+
+  /**
+   * setState
+   * @param {datacontract} contract apartment contract
+   */
+  setDataContract(contract) {
+    this.setState(Object.assign({}, this.state, { dataContract: contract }));
+  }
 
   render() {
     return (
@@ -125,14 +153,42 @@ class DefineSiteApartment extends Component {
                   }}
                 ></ParameterComponent>
                 {this.renderForParameter()}
+                {this.props.addedBlocks && this.props.addedBlocks.length > 0 ? (
+                  <List>
+                    {this.props.blockList && this.props.blockList.length > 0 ? (
+                      this.props.blockList.map((elm, ind) => {
+                        return <ListItem> {elm.code}</ListItem>;
+                      })
+                    ) : (
+                      <ListItem></ListItem>
+                    )}
+                  </List>
+                ) : (
+                  <div></div>
+                )}
               </Grid>
             </Grid>
             <Grid container spacing={3}>
               <Grid item md={4}>
-                <CityComponent />
+                <CityComponent
+                  onSelectedCity={(cityContract) => {
+                    debugger;
+                    var tmpContract = new ApartmentContract();
+                    tmpContract = this.state.dataContract;
+                    tmpContract.cityId = cityContract.cityId;
+                    this.setDataContract(tmpContract);
+                  }}
+                />
               </Grid>
               <Grid item md={4}>
-                <CountyComponent />
+                <CountyComponent
+                  onSelectedCounty={(contract) => {
+                    var tmpContract = new ApartmentContract();
+                    tmpContract = this.state.dataContract;
+                    tmpContract.countyId = contract.countyId;
+                    this.setDataContract(tmpContract);
+                  }}
+                />
               </Grid>
               <Grid item md={4}>
                 <TextField
@@ -154,69 +210,6 @@ class DefineSiteApartment extends Component {
             </Grid>
           </Grid>
         </CardContent>
-        {/* <Form>
-          <Row form>
-            <Col>
-              <FormGroup>
-                <ParameterComponent
-                  paramType="siteapt"
-                  labelName={Messages.LabelNames.recordType}
-                  isAllOption={true}
-                  onSelectParameter={(val) => {
-                    if (val > 0) {
-                      this.setState(
-                        Object.assign({}, this.state, {
-                          selectedParamCode: val,
-                        })
-                      );
-                    }
-                  }}
-                ></ParameterComponent>
-              </FormGroup>
-            </Col>
-          </Row>
-          {this.renderForParameter()}
-          <Row form>
-            <Col md={5}>
-              <FormGroup>
-                <CityComponent />
-              </FormGroup>
-            </Col>
-            <Col md={5}>
-              <FormGroup>
-                <CountyComponent />
-              </FormGroup>
-            </Col>
-            <Col md={2}>
-              <FormGroup>
-                <TextField
-                  id="outlined-basic"
-                  label={Messages.LabelNames.zipcode}
-                  variant="outlined"
-                />
-              </FormGroup>
-            </Col>
-          </Row>
-          <FormGroup>
-            <TextField
-              id="outlined-basic"
-              label={Messages.LabelNames.address}
-              multiline
-              rows={5}
-              variant="outlined"
-            />
-          </FormGroup>
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            startIcon={<SaveIcon />}
-            onClick={this.onSubmit()}
-          >
-            {Messages.ActionNames.save}
-          </Button>
-        </Form>
-      */}
       </Card>
     );
   }
@@ -230,6 +223,8 @@ function mapStateToProps(state) {
     countyList: state.countyReducer,
     blockList: state.defineBlockReducer,
     actionEvent: state.actionExecuteReducer,
+    currentCityId: state.changeSelectedCityReducer,
+    addedBlocks: state.defineBlockReducer,
   };
 }
 

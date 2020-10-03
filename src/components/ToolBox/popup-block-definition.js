@@ -2,22 +2,24 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as messageActions from "../../redux/actions/message-actions";
 import * as apartmentActions from "../../redux/actions/apertment-actions";
-
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Input,
-  Label,
-} from "reactstrap";
-import Messages from "../../Types/Messages";
+import ButtonWithIcon from "./icon-buttons";
 import { bindActionCreators } from "redux";
+import {
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Modal,
+  TextField,
+} from "@material-ui/core";
+import { CommonTypes } from "../../Types/Common";
+import BlockContract from "../../Models/BlockContract";
+import CheckboxList from "./list";
 
-export class blockDefinition extends Component {
+class BlockDefinition extends Component {
   constructor(props) {
     super(props);
+    //var block = new BlockContract("undef");
     this.state = {
       modal: true,
       blockList: [],
@@ -25,53 +27,75 @@ export class blockDefinition extends Component {
   }
 
   toggle = () => this.setState({ modal: !this.state.modal });
-  inpRef = Input;
+  blockCode = "";
+  /**
+   * listeleme komponeni için düzenleme yapar
+   */
+  getBlockListForCheckBoxList = () => {
+    var templst = this.state.blockList.map((val, ind) => {
+      return {
+        label: val.Code,
+      };
+    });
+
+    return templst;
+  };
 
   render() {
     return (
       <div>
-        <Modal isOpen={this.state.modal} toggle={this.toggle}>
-          <ModalHeader toggle={this.toggle}>
-            {Messages.Titles.defineBlock}
-          </ModalHeader>
-          <ModalBody>
-            <Label for="blokName"> {Messages.LabelNames.blockName}</Label>
-            <Input
-              ref={(r) => (this.inpRef = r)}
-              type="text"
-              id="blokName"
-              maxLength="2"
-              onChange={(e) => {
-                var lst = this.state.blockList;
-                lst.push({ code: e.target.value });
-                this.setState({ blockList: lst });
-                var r = this.inpRef;
-                debugger;
-              }}
-            ></Input>
-            <Button
-              color="primary"
-              onClick={(e) => {
-                this.props.actions.addBlock(this.state.blockList);
-                this.setState({ modal: false });
-              }}
-            >
-              {Messages.ActionNames.add}
-            </Button>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              color="primary"
-              onClick={(e) => {
-                this.props.actions.addBlock(this.state.blockList);
-              }}
-            >
-              {Messages.ActionNames.save}
-            </Button>{" "}
-            <Button color="secondary" onClick={this.toggle}>
-              Cancel
-            </Button>
-          </ModalFooter>
+        <Modal
+          open={this.state.modal}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          <Card>
+            <CardHeader title="Blok Tanımı"></CardHeader>
+            <CardContent>
+              <TextField
+                type="string"
+                label="Blok Kodu"
+                onChange={(e) => {
+                  this.blockCode = e.target.value;
+                }}
+              ></TextField>
+              <CheckboxList
+                list={this.getBlockListForCheckBoxList()}
+                onDelete={(label) => {
+                  if (label && label.length > 0) {
+                    var lst = this.state.blockList.filter(
+                      (x) => x.Code !== label
+                    );
+                    this.setState({ blockList: lst });
+                  }
+                }}
+              ></CheckboxList>
+            </CardContent>
+            <CardActions>
+              <ButtonWithIcon
+                actionType={CommonTypes.ActionTypes.add}
+                onClick={(e) => {
+                  var lst = this.state.blockList;
+                  lst.push(new BlockContract(this.blockCode));
+                  this.setState({ blockList: lst });
+                }}
+              ></ButtonWithIcon>
+              <ButtonWithIcon
+                actionType={CommonTypes.ActionTypes.save}
+                onClick={(e) => {
+                  if (this.props.actions.addBlock) {
+                    this.props.actions.addBlock(this.state.blockList);
+                  }
+                }}
+              ></ButtonWithIcon>
+              <ButtonWithIcon
+                actionType={CommonTypes.ActionTypes.close}
+                onClick={(e) => {
+                  this.toggle();
+                }}
+              ></ButtonWithIcon>
+            </CardActions>
+          </Card>
         </Modal>
       </div>
     );
@@ -92,4 +116,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(blockDefinition);
+export default connect(mapStateToProps, mapDispatchToProps)(BlockDefinition);

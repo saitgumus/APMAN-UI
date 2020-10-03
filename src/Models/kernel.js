@@ -5,7 +5,8 @@ export class Response {
   value = {};
   valueList = [{}];
 
-  constructor() {
-    this.success = true;
+  constructor(isSuccess = true, errorMessage = "") {
+    this.success = isSuccess;
+    this.errorMessage = errorMessage;
   }
 }

@@ -5,7 +5,7 @@ import TabIn from "./Begin/TabIn";
 import Messages from "../Types/Messages";
 import { connect } from "react-redux";
 import AppBarMenu from "./Navigation/app-bar";
-import { Container } from "@material-ui/core";
+import { Backdrop, CircularProgress, Container } from "@material-ui/core";
 import ActionBar from "./Navigation/action-bar";
 
 function Layout(props) {
@@ -37,6 +37,14 @@ function Layout(props) {
 
   return (
     <div>
+      <Backdrop
+        open={false}
+        onClick={(e) => {
+          //setBackdrop(!backdrop);
+        }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <AppBarMenu>
         <Container maxWidth="xl">
           <ActionBar></ActionBar>

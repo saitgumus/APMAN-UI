@@ -20,27 +20,29 @@ class ActionBar extends Component {
   };
 
   generateActions = () => {
-    debugger;
-    if (this.props.actionKeys && this.props.actionKeys.length > 0) {
-      var rtnObj = this.props.actionKeys.map((value, index) => {
-        return (
-          <Action
-            Key={value}
-            Icon={this.getIcon(value)}
-            executeCommand
-          ></Action>
-        );
-      });
+    if (
+      this.props.actionListInfo &&
+      this.props.actionListInfo.actionKeyList &&
+      this.props.actionListInfo.actionKeyList.length > 0
+    ) {
+      var rtnObj = this.props.actionListInfo.actionKeyList.map(
+        (value, index) => {
+          return (
+            <Action
+              Key={value}
+              Icon={this.getIcon(value)}
+              ResourceCode={this.props.actionListInfo.resourceCode}
+              executeCommand
+            ></Action>
+          );
+        }
+      );
 
       return rtnObj;
     }
   };
 
   render() {
-    // let generateActions = () => {
-    //   debugger;
-    //   if (this.props.actionKeys) this.generateActions();
-    // };
     return (
       <Card>
         <CardContent>
@@ -59,9 +61,8 @@ class ActionBar extends Component {
 }
 
 function mapStateToProps(state) {
-  debugger;
   return {
-    actionKeys: state.actionListReducer,
+    actionListInfo: state.actionListReducer,
   };
 }
 

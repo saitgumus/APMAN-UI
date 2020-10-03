@@ -26,17 +26,22 @@ export default {
     messageType: CommonTypes.MessageTypes.info,
     message: "initial message",
   },
-  block: {
-    siteId: -1,
-    code: "",
-  },
+  blockList: [
+    {
+      siteId: -1,
+      code: "",
+    },
+  ],
   apertment: {
     Name: "",
   },
   site: {
     Name: "",
   },
-  actionList: [],
+  actionListInfo: {
+    actionKeyList: [],
+    resourceCode: "",
+  },
   executedAction: {
     resourceCode: "",
     key: "",

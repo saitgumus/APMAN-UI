@@ -13,7 +13,6 @@ import * as actionTypes from "./action-types";
 export function changeActiveResourceCode(resourceCode) {
   let actionKeys = [];
 
-  debugger;
   // LogMessage("test message");
   switch (resourceCode) {
     case CommonTypes.Resources.defineSiteApartment.resourceCode:
@@ -24,14 +23,14 @@ export function changeActiveResourceCode(resourceCode) {
   }
 
   return function (dispatch) {
-    dispatch(GetActionListSuccess(actionKeys));
+    dispatch(GetActionListSuccess(actionKeys, resourceCode));
   };
 }
 
-export function GetActionListSuccess(actionKeyList) {
+export function GetActionListSuccess(actionKeyList, resourceCode) {
   return {
     type: actionTypes.CHANGE_ACTION_LIST,
-    payload: actionKeyList,
+    payload: { actionKeyList, resourceCode },
   };
 }
 
@@ -55,12 +54,12 @@ export function executeCommand(resourceCode, actionKey) {
  * @param {page resource code} resourceCode kaynak kodu
  * @param {executed action key} actionKey aksiyon anahtarı
  */
-export function executeSuccess(resourceCode, actionKey) {
+export function executeSuccess(resourceCode, key) {
   return {
-    action: actionTypes.EXECUTE_ACTION,
+    type: actionTypes.EXECUTE_ACTION,
     payload: {
       resourceCode,
-      actionKey,
+      key,
     },
   };
 }

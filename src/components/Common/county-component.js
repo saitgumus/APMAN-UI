@@ -1,10 +1,9 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as messageActions from "../../redux/actions/message-actions";
 import * as cityCountyActions from "../../redux/actions/city-county-actions";
-// eslint-disable-next-line
-import { Spinner, Label, Input } from "reactstrap";
 import Messages from "../../Types/Messages";
 
 import TextField from "@material-ui/core/TextField";
@@ -17,6 +16,7 @@ class CountyComponent extends Component {
       loading: true,
     };
   }
+
   componentDidMount() {
     this.props.actions.getCountyList();
   }
@@ -45,14 +45,6 @@ class CountyComponent extends Component {
 
     return (
       <div>
-        {/* <Label for="county">{Messages.LabelNames.county}</Label>
-        <Input type="select" name="county" id="county" placeholder="Seçiniz.">
-          {filtered.map((e) => (
-            <option key={e.cityId + "cnty"} value={e.countyId}>
-              {e.name}
-            </option>
-          ))}
-        </Input> */}
         <Autocomplete
           id="combo-box-demo"
           options={filtered}
@@ -67,6 +59,11 @@ class CountyComponent extends Component {
           )}
           onChange={(e, value, reason) => {
             //value : countyContract
+            if (this.props && this.props.onSelectedCounty) {
+              if (value && value.countyId) {
+                this.props.onSelectedCounty(value);
+              }
+            }
           }}
         />
       </div>
@@ -85,6 +82,12 @@ class CountyComponent extends Component {
     return <div>{content}</div>;
   }
 }
+
+CountyComponent.propTypes = {
+  onSelectedCounty: PropTypes.func,
+};
+
+//#region redux
 
 function mapStateToProps(state) {
   return {
@@ -111,3 +114,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CountyComponent);
+//#endregion

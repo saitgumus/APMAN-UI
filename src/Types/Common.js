@@ -41,6 +41,17 @@ export class CommonTypes {
   };
 
   /**
+   * aksiyon tiplerini tutar.
+   */
+  static ActionTypes = {
+    save: "save",
+    add: "add",
+    delete: "delete",
+    info: "info",
+    close: "close",
+  };
+
+  /**
    * kaynak tanımları
    */
   static Resources = {

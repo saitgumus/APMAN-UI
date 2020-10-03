@@ -1,5 +1,6 @@
 import { Button } from "@material-ui/core";
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import InfoIcon from "@material-ui/icons/Info";
 import { bindActionCreators } from "redux";
@@ -23,7 +24,7 @@ const Action = (props) => {
           color="primary"
           size="medium"
           startIcon={props.Icon ? props.Icon : <InfoIcon />}
-          onClick={(e) => props.executeCommand()} //todo: redux
+          onClick={(e) => props.actions.executeCommand(props.ResourceCode, key)}
         >
           {getActionLabel(key)}
         </Button>
@@ -32,6 +33,10 @@ const Action = (props) => {
       )}
     </div>
   );
+};
+
+Action.propType = {
+  ResourceCode: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({});

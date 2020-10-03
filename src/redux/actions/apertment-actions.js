@@ -1,14 +1,14 @@
 import * as actionTypes from "./action-types";
 
-export function addBlockSuccess(block) {
+export function addBlockSuccess(blockList) {
   return {
     actionType: actionTypes.SAVE_NEW_BLOCK,
-    payload: block,
+    payload: blockList,
   };
 }
 
-export function saveBlock(block) {
+export function saveBlock(blockList) {
   return function (dispatch) {
-    dispatch(addBlockSuccess(block));
+    dispatch(addBlockSuccess(blockList));
   };
 }

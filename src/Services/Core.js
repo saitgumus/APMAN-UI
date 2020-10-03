@@ -1,4 +1,3 @@
-import Parameter from "../Models/Parameter";
 import Axios from "axios";
 import { CommonTypes } from "../Types/Common";
 import { Response } from "../Models/kernel";
@@ -13,42 +12,32 @@ export class ParameterService {
    * @param {"paramtype"} parametre
    */
   async GetParameter(paramType) {
-    return new Promise((response, reject) => {
-      if (paramType && paramType.length > 1) {
-        let prm = new Parameter();
-        prm.ParamType = paramType;
-        let returnObject = new Response();
+    if (!paramType || paramType.length < 1) {
+      return new Response(false, "parametre tipi boş olmamalı.");
+    }
 
-        var cache = Cache.getParameter(paramType);
-        if (cache) {
-          returnObject.valueList = cache;
-          response(returnObject);
-        }
-        Axios.post(CommonTypes.GetUrlForAPI("core", "getparameter"), {
-          ParamType: paramType,
-        })
-          .then((res) => {
-            var data = res.data;
-            if (data && data.length > 0) {
-              returnObject.valueList = [];
+    var parameters = [];
+    let returnObject = new Response();
 
-              data.forEach((element) => {
-                returnObject.valueList.push(element);
-              });
-
-              Cache.setParameter(paramType, returnObject.valueList);
-            }
-
-            response(returnObject);
-          })
-          .catch((e) => {
-            returnObject.success = false;
-            returnObject.errorMessage = e.toString();
-            reject(returnObject);
+    await Axios.post(CommonTypes.GetUrlForAPI("core", "getparameter"), {
+      ParamType: paramType,
+    })
+      .then((res) => {
+        var data = res.data;
+        if (data && data.length > 0) {
+          data.forEach((element) => {
+            parameters.push(element);
           });
-      } else {
-        response(new Parameter());
-      }
-    });
+          Cache.setParameter(paramType, parameters);
+        }
+
+        returnObject.valueList = parameters;
+      })
+      .catch((e) => {
+        console.log(e);
+        returnObject = new Response(false, "parametre alınamadı.");
+      });
+
+    return returnObject;
   }
 }

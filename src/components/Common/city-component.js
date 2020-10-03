@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as messageActions from "../../redux/actions/message-actions";
@@ -60,8 +61,12 @@ class CityComponent extends Component {
           )}
           onChange={(e, value, reason) => {
             //value : cityContract
-            if (value.cityId)
+            if (value && value.cityId) {
               this.props.actions.changeSelectedCityId(value.cityId);
+              if (this.props.onSelectedCity) {
+                this.props.onSelectedCity(value);
+              }
+            }
           }}
         />
       </div>
@@ -69,6 +74,10 @@ class CityComponent extends Component {
     // <div>{content}</div>;
   }
 }
+
+CityComponent.propTypes = {
+  onSelectedCity: PropTypes.func,
+};
 
 function mapStateToProps(state) {
   return {

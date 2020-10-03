@@ -8,7 +8,12 @@ export default class ParameterComponent extends Component {
     super(props);
 
     this.state = {
-      data: [],
+      data: [
+        {
+          paramType: "default",
+          paramDescription: "loading...",
+        },
+      ],
       paramType: this.props.paramType,
       labelName: this.props.labelName ? this.props.labelName : "parameter name",
       isAllOption: this.props.isAllOption,
@@ -21,49 +26,14 @@ export default class ParameterComponent extends Component {
   onChange = this.props.onSelectParameter;
 
   componentDidMount() {
-    this.service
-      .GetParameter(this.state.paramType)
-      .then((res) => {
-        this.setState({ data: res.valueList });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    this.service.GetParameter(this.state.paramType).then((value) => {
+      this.setState(Object.assign({}, this.state, { data: value.valueList }));
+    });
   }
 
   render() {
     return (
       <div>
-        {/* <Label for="parameter">{this.state.labelName}</Label>
-        <Input
-          type="select"
-          name="params"
-          id="parameter"
-          placeholder=""
-          onChange={(e) => {
-            debugger;
-            if (this.props.onSelectParameter) {
-              this.props.onSelectParameter(e.target.value);
-            }
-          }}
-        >
-          {this.state.isAllOption ? (
-            <option key="allOptn" value="-1">
-              Seçiniz
-            </option>
-          ) : (
-            <option></option>
-          )}
-          {this.state.data.map((val, indx) => {
-            return (
-              <option key={indx + "PRM"} value={val.paramCode}>
-                {" "}
-                {val.paramDescription}{" "}
-              </option>
-            );
-          })}
-        </Input>
-        */}
         <Autocomplete
           id="combo-box-demo"
           options={this.state.data}
@@ -77,9 +47,7 @@ export default class ParameterComponent extends Component {
             />
           )}
           onChange={(e, value, reason) => {
-            //value : parameterContract
-            debugger;
-            if (this.props.onSelectParameter) {
+            if (value && this.props.onSelectParameter) {
               this.props.onSelectParameter(value.paramCode);
             }
           }}

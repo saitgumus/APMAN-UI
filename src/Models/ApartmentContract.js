@@ -1,12 +1,12 @@
 export default class ApartmentContract {
-  SiteId;
-  ApartmentId;
-  BlockId;
-  Name;
-  AddressText;
-  CityId;
-  CityName;
-  CountyId;
-  CountyName;
-  ZipCode;
+  siteId;
+  apartmentId;
+  blockId;
+  name;
+  addressText;
+  cityId;
+  cityName;
+  countyId;
+  countyName;
+  zipCode;
 }
