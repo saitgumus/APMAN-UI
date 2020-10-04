@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 export default function CheckboxList(props) {
   const classes = useStyles();
   const [checked, setChecked] = React.useState([0]);
+  const isCheckBoxVisible = props.isCheckBoxVisible ? true : false;
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -60,6 +61,7 @@ export default function CheckboxList(props) {
                 tabIndex={-1}
                 disableRipple
                 inputProps={{ "aria-labelledby": labelId }}
+                hidden={!isCheckBoxVisible}
               />
             </ListItemIcon>
             <ListItemText id={labelId} primary={value.label} />

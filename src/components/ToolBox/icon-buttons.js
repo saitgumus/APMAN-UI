@@ -17,13 +17,13 @@ export default function ButtonWithIcon(props) {
     if (props.actionType) {
       switch (props.actionType) {
         case CommonTypes.ActionTypes.add:
-          return <AddIcon colorPrimary></AddIcon>;
+          return <AddIcon color="primary"></AddIcon>;
         case CommonTypes.ActionTypes.save:
-          return <SaveIcon colorPrimary></SaveIcon>;
+          return <SaveIcon color="primary"></SaveIcon>;
         case CommonTypes.ActionTypes.delete:
-          return <DeleteIcon colorAction></DeleteIcon>;
+          return <DeleteIcon color="action"></DeleteIcon>;
         case CommonTypes.ActionTypes.close:
-          return <CancelIcon colorError></CancelIcon>;
+          return <CancelIcon color="error"></CancelIcon>;
         default:
           return <InfoIcon></InfoIcon>;
       }

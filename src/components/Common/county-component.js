@@ -21,7 +21,7 @@ class CountyComponent extends Component {
     this.props.actions.getCountyList();
   }
 
-  static createContent(countyList, cityId) {
+  createContent(countyList, cityId) {
     var filtered = countyList.filter((x) => x.cityId === parseInt(cityId));
     if (!filtered || filtered.length < 1) {
       return (
@@ -71,15 +71,13 @@ class CountyComponent extends Component {
   }
 
   render() {
-    let content =
-      this.props.countyList && this.props.countyList.length > 1
-        ? CountyComponent.createContent(
-            this.props.countyList,
-            this.props.currentCityId
-          )
-        : CountyComponent.createContent([], -1);
-
-    return <div>{content}</div>;
+    return (
+      <div>
+        {this.props.countyList && this.props.countyList.length > 1
+          ? this.createContent(this.props.countyList, this.props.currentCityId)
+          : this.createContent([], -1)}
+      </div>
+    );
   }
 }
 

@@ -3,7 +3,7 @@ import { useAlert } from "react-alert";
 import { CommonTypes } from "../Types/Common";
 import { connect } from "react-redux";
 
-export function ShowMessage(props) {
+function ShowMessage(props) {
   const alert = useAlert();
 
   let show = () => {

@@ -10,7 +10,6 @@ import { Response, Result, Severity } from "../Core/Response";
  * @param {object} siteApartmentContract
  */
 export async function DefineSiteApartmentService(siteApartmentContract) {
-  debugger;
   var returnObject = new Response();
 
   if (!siteApartmentContract) {
@@ -25,10 +24,10 @@ export async function DefineSiteApartmentService(siteApartmentContract) {
     CommonTypes.GetUrlForAPI("apartment", "saveapartment"),
     siteApartmentContract
   ).then((res) => {
-    debugger;
     if (res.status === CommonTypes.ResponseStatusCode.successful.created) {
       //todo: will set.
       console.log("defined new apartment.");
+      returnObject.success = true;
     }
   });
 

@@ -25,11 +25,11 @@ const store = configureStore();
 
 ReactDOM.render(
   <BrowserRouter>
-    <AlertProvider template={AlertTemplate} {...options}>
-      <Provider store={store}>
+    <Provider store={store}>
+      <AlertProvider template={AlertTemplate} {...options}>
         <App />
-      </Provider>
-    </AlertProvider>
+      </AlertProvider>
+    </Provider>
   </BrowserRouter>,
   rootElement
 );

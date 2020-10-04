@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import AppBarMenu from "./Navigation/app-bar";
 import { Backdrop, CircularProgress, Container } from "@material-ui/core";
 import ActionBar from "./Navigation/action-bar";
+import ShowMessage from "./ShowMessage";
 
 function Layout(props) {
   // eslint-disable-next-line
@@ -37,6 +38,7 @@ function Layout(props) {
 
   return (
     <div>
+      <ShowMessage></ShowMessage>
       <Backdrop
         open={false}
         onClick={(e) => {

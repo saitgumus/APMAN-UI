@@ -23,8 +23,11 @@ import {
 
 import { DefineSiteApartmentService } from "../../../Services/DefineSiteApartment";
 import BlockDefinition from "../../ToolBox/popup-block-definition";
+import { IsNullOrEmpty } from "../../Utils/Helper";
 
 class DefineSiteApartment extends Component {
+  dataContract = new ApartmentContract();
+
   constructor(props) {
     super(props);
     this.state = {
@@ -43,7 +46,8 @@ class DefineSiteApartment extends Component {
     if (this.props.actionEvent && this.props.actionEvent.key.length > 1) {
       switch (this.props.actionEvent.key) {
         case CommonTypes.ActionKeys.Save:
-          DefineSiteApartmentService(this.state.dataContract);
+          if (this.controlDataContract())
+            DefineSiteApartmentService(this.dataContract);
           break;
 
         default:
@@ -60,6 +64,9 @@ class DefineSiteApartment extends Component {
     }
   }
 
+  /**
+   * render for site or apartment parameter
+   */
   renderForParameter = () => {
     if (parseInt(this.state.selectedParamCode) > 0) {
       if (this.state.selectedParamCode === "1") {
@@ -83,6 +90,18 @@ class DefineSiteApartment extends Component {
   };
 
   /**
+   * kaydedilen blokları forma ekler
+   */
+  getBlockList = () => {
+    if (this.props.addedBlocks && this.props.addedBlocks.length > 0) {
+      this.dataContract.BlockList = this.props.addedBlocks;
+      var lst = this.props.addedBlocks.map((elm, ind) => {
+        return <ListItem key={ind}> {elm.Code}</ListItem>;
+      });
+      return lst;
+    }
+  };
+  /**
    * apartman tanıtım kartı
    */
   apartmentDefinitionCard = (
@@ -92,16 +111,12 @@ class DefineSiteApartment extends Component {
           type="string"
           label="Apartman Adı"
           onChange={(e) => {
-            var tmpContract = new ApartmentContract();
-            tmpContract = this.state.dataContract;
-            tmpContract.name = e.target.value;
-            this.setDataContract(tmpContract);
+            this.dataContract.Name = e.target.value;
           }}
         ></TextField>
       </Paper>
     </Card>
   );
-
   /**
    * site tanıtım kartı
    */
@@ -112,10 +127,7 @@ class DefineSiteApartment extends Component {
           type="string"
           label="Site Adı"
           onChange={(e) => {
-            var tmpContract = new ApartmentContract();
-            tmpContract = this.state.dataContract;
-            tmpContract.name = e.target.value;
-            this.setDataContract(tmpContract);
+            this.dataContract.Name = e.target.value;
           }}
         ></TextField>
         <BlockDefinition></BlockDefinition>
@@ -124,11 +136,39 @@ class DefineSiteApartment extends Component {
   );
 
   /**
-   * setState
-   * @param {datacontract} contract apartment contract
+   * control for data contract validation
    */
-  setDataContract(contract) {
-    this.setState(Object.assign({}, this.state, { dataContract: contract }));
+  controlDataContract() {
+    if (IsNullOrEmpty(this.dataContract.Name)) {
+      this.showDialogMessage("Apartman veya Site ismini giriniz.", true);
+      return false;
+    }
+    if (IsNullOrEmpty(this.dataContract.AddressText)) {
+      this.showDialogMessage("Adres alanı boş olamamalıdır.", true);
+      return false;
+    }
+    if (this.dataContract.CityId < 1) {
+      this.showDialogMessage("İl bilgisi giriniz.", true);
+      return false;
+    }
+    if (this.dataContract.CountyId < 1) {
+      this.showDialogMessage("İlçe bilgisi giriniz.", true);
+      return false;
+    }
+    if (this.dataContract.ZipCode < 1) {
+      this.showDialogMessage("Posta Kodu bilgisi giriniz.", true);
+      return false;
+    }
+    return true;
+  }
+
+  showDialogMessage(message, isError = false) {
+    if (this.props.actions.showMessage) {
+      this.props.actions.showMessage(
+        message,
+        isError ? CommonTypes.MessageTypes.error : CommonTypes.MessageTypes.info
+      );
+    }
   }
 
   render() {
@@ -153,40 +193,21 @@ class DefineSiteApartment extends Component {
                   }}
                 ></ParameterComponent>
                 {this.renderForParameter()}
-                {this.props.addedBlocks && this.props.addedBlocks.length > 0 ? (
-                  <List>
-                    {this.props.blockList && this.props.blockList.length > 0 ? (
-                      this.props.blockList.map((elm, ind) => {
-                        return <ListItem> {elm.code}</ListItem>;
-                      })
-                    ) : (
-                      <ListItem></ListItem>
-                    )}
-                  </List>
-                ) : (
-                  <div></div>
-                )}
+                <List>{this.getBlockList()}</List>
               </Grid>
             </Grid>
             <Grid container spacing={3}>
               <Grid item md={4}>
                 <CityComponent
                   onSelectedCity={(cityContract) => {
-                    debugger;
-                    var tmpContract = new ApartmentContract();
-                    tmpContract = this.state.dataContract;
-                    tmpContract.cityId = cityContract.cityId;
-                    this.setDataContract(tmpContract);
+                    this.dataContract.CityId = cityContract.cityId;
                   }}
                 />
               </Grid>
               <Grid item md={4}>
                 <CountyComponent
                   onSelectedCounty={(contract) => {
-                    var tmpContract = new ApartmentContract();
-                    tmpContract = this.state.dataContract;
-                    tmpContract.countyId = contract.countyId;
-                    this.setDataContract(tmpContract);
+                    this.dataContract.CountyId = contract.countyId;
                   }}
                 />
               </Grid>
@@ -196,6 +217,9 @@ class DefineSiteApartment extends Component {
                   label={Messages.LabelNames.zipcode}
                   variant="outlined"
                   type="number"
+                  onChange={(e) => {
+                    this.dataContract.ZipCode = e.target.value;
+                  }}
                 />
               </Grid>
             </Grid>
@@ -206,6 +230,9 @@ class DefineSiteApartment extends Component {
                 multiline
                 rows={5}
                 variant="outlined"
+                onChange={(e) => {
+                  this.dataContract.AddressText = e.target.value;
+                }}
               />
             </Grid>
           </Grid>

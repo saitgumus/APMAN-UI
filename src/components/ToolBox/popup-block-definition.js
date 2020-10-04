@@ -19,7 +19,6 @@ import CheckboxList from "./list";
 class BlockDefinition extends Component {
   constructor(props) {
     super(props);
-    //var block = new BlockContract("undef");
     this.state = {
       modal: true,
       blockList: [],
@@ -58,6 +57,12 @@ class BlockDefinition extends Component {
                 onChange={(e) => {
                   this.blockCode = e.target.value;
                 }}
+                onBlur={(e) => {
+                  e.target.value = "";
+                }}
+                onFocus={(e) => {
+                  e.target.value = "";
+                }}
               ></TextField>
               <CheckboxList
                 list={this.getBlockListForCheckBoxList()}
@@ -76,6 +81,13 @@ class BlockDefinition extends Component {
                 actionType={CommonTypes.ActionTypes.add}
                 onClick={(e) => {
                   var lst = this.state.blockList;
+                  if (lst.find((r) => r.Code === this.blockCode)) {
+                    this.props.actions.showMessage(
+                      this.blockCode + " isimli blok zaten ekli",
+                      CommonTypes.MessageTypes.error
+                    );
+                    return;
+                  }
                   lst.push(new BlockContract(this.blockCode));
                   this.setState({ blockList: lst });
                 }}
@@ -85,6 +97,7 @@ class BlockDefinition extends Component {
                 onClick={(e) => {
                   if (this.props.actions.addBlock) {
                     this.props.actions.addBlock(this.state.blockList);
+                    this.toggle();
                   }
                 }}
               ></ButtonWithIcon>
