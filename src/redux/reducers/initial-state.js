@@ -43,8 +43,9 @@ export default {
     resourceCode: "",
   },
   executedAction: {
-    resourceCode: "",
-    key: "",
+    onExecute: () => {
+      alert("executed redux function");
+    },
   },
 };
 

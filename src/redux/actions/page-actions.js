@@ -36,30 +36,23 @@ export function GetActionListSuccess(actionKeyList, resourceCode) {
 
 //#endregion
 
-//#region execute command
+//#region execute action
 
 /**
- * aksiyonu tetikler
- * @param {string} resourceCode ekran kaynak kodu
- * @param {string} actionKey aksiyon anahtarı
+ * on execute action
+ * @param {func} onExecute (key)
  */
-export function executeCommand(resourceCode, actionKey) {
+export function executeCommand(onExecute) {
   return function (dispatch) {
-    dispatch(executeSuccess(resourceCode, actionKey));
+    dispatch(executeSuccess(onExecute));
   };
 }
 
-/**
- * aksiyon alınma durumunda çalışır.
- * @param {page resource code} resourceCode kaynak kodu
- * @param {executed action key} actionKey aksiyon anahtarı
- */
-export function executeSuccess(resourceCode, key) {
+export function executeSuccess(onExecute) {
   return {
     type: actionTypes.EXECUTE_ACTION,
     payload: {
-      resourceCode,
-      key,
+      onExecute,
     },
   };
 }

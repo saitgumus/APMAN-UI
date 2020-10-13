@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 //import { Container } from "reactstrap";
 //import { NavMenu } from "./NavMenu";
 import TabIn from "./Begin/TabIn";
@@ -8,21 +8,9 @@ import AppBarMenu from "./Navigation/app-bar";
 import { Backdrop, CircularProgress, Container } from "@material-ui/core";
 import ActionBar from "./Navigation/action-bar";
 import ShowMessage from "./ShowMessage";
+//import { ActionContext } from "./Kernel/Context";
 
 function Layout(props) {
-  // eslint-disable-next-line
-  const [openMenu, setOpenMenu] = useState(false);
-
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     isLogin: false,
-  //     openMenu: false,
-  //   };
-  // }
-
-  //render() {
-  //eslint-disable-next-line
   let loginControl = () => {
     if (props.loginJwtObject && props.loginJwtObject.isSuccess) {
       return props.children;

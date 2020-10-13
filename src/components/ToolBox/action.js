@@ -24,7 +24,10 @@ const Action = (props) => {
           color="primary"
           size="medium"
           startIcon={props.Icon ? props.Icon : <InfoIcon />}
-          onClick={(e) => props.actions.executeCommand(props.ResourceCode, key)}
+          onClick={(e) => {
+            if (props.onExecuteCommand && props.onExecuteCommand.onExecute)
+              props.onExecuteCommand.onExecute(key);
+          }}
         >
           {getActionLabel(key)}
         </Button>
@@ -39,7 +42,9 @@ Action.propType = {
   ResourceCode: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  onExecuteCommand: state.actionExecuteReducer,
+});
 
 const mapDispatchToProps = (dispatch) => {
   return {

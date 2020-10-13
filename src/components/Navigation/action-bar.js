@@ -19,6 +19,11 @@ class ActionBar extends Component {
     }
   };
 
+  static executeCommand(key) {
+    alert("no event. key:" + key);
+    return;
+  }
+
   generateActions = () => {
     if (
       this.props.actionListInfo &&
@@ -33,6 +38,7 @@ class ActionBar extends Component {
               Icon={this.getIcon(value)}
               ResourceCode={this.props.actionListInfo.resourceCode}
               executeCommand
+              onExecuteCommand={ActionBar.executeCommand}
             ></Action>
           );
         }

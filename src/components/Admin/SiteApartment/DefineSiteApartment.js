@@ -42,27 +42,27 @@ class DefineSiteApartment extends Component {
     this.renderForParameter = this.renderForParameter.bind(this);
   }
 
-  componentDidUpdate() {
-    if (this.props.actionEvent && this.props.actionEvent.key.length > 1) {
-      switch (this.props.actionEvent.key) {
-        case CommonTypes.ActionKeys.Save:
-          if (this.controlDataContract())
-            DefineSiteApartmentService(this.dataContract);
-          break;
-
-        default:
-          break;
-      }
-    }
-  }
-
   componentDidMount() {
     if (this.props.actions.changeActiveResourceCode) {
       this.props.actions.changeActiveResourceCode(
         CommonTypes.Resources.defineSiteApartment.resourceCode
       );
     }
+    if (this.props.actions.executeCommand) {
+      this.props.actions.executeCommand(this.onExecute);
+    }
   }
+
+  onExecute = (key) => {
+    switch (key) {
+      case CommonTypes.ActionKeys.Save:
+        if (this.controlDataContract())
+          DefineSiteApartmentService(this.dataContract);
+        break;
+      default:
+        break;
+    }
+  };
 
   /**
    * render for site or apartment parameter
@@ -246,11 +246,8 @@ class DefineSiteApartment extends Component {
 
 function mapStateToProps(state) {
   return {
-    cityList: state.cityReducer,
-    countyList: state.countyReducer,
     blockList: state.defineBlockReducer,
     actionEvent: state.actionExecuteReducer,
-    currentCityId: state.changeSelectedCityReducer,
     addedBlocks: state.defineBlockReducer,
   };
 }
@@ -274,6 +271,7 @@ function mapDispatchToProps(dispatch) {
         pageActions.changeActiveResourceCode,
         dispatch
       ),
+      executeCommand: bindActionCreators(pageActions.executeCommand, dispatch),
     },
   };
 }
