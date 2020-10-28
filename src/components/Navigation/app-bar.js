@@ -29,7 +29,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 // import Layout from "../Layout";
-
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
 // import { Home } from "../Home";
 // import { FetchData } from "../FetchData";
 // import { Counter } from "../Counter";
@@ -345,7 +345,7 @@ export default function AppBarMenu(props) {
           </IconButton>
         </div>
         <Divider />
-        <p>Admin</p>
+        <Typography variant="subtitle1">Yönetsel</Typography>
         <List>
           <ListItem
             button
@@ -357,6 +357,18 @@ export default function AppBarMenu(props) {
               <InboxIcon />
             </ListItemIcon>
             <ListItemText primary={"Site/Apartman Ekle"} />
+          </ListItem>
+
+          <ListItem
+            button
+            key={"Uye Ekle"}
+            component={Link}
+            to="/admin/definemember"
+          >
+            <ListItemIcon>
+              <PersonAddIcon />
+            </ListItemIcon>
+            <ListItemText primary={"Üye Ekle"} />
           </ListItem>
         </List>
         <Divider />

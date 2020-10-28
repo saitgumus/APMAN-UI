@@ -24,29 +24,6 @@ class CityComponent extends Component {
   render() {
     return (
       <div>
-        {/* <Label for="city">{Messages.LabelNames.city}</Label>
-        <Input
-          type="select"
-          name="params"
-          id="city"
-          placeholder="Seçiniz."
-          onChange={(e) => {
-            this.props.actions.changeSelectedCityId(e.target.value);
-          }}
-        >
-          {this.props.cityList && this.props.cityList.length > 1 ? (
-            this.props.cityList.map((e) => {
-              return (
-                <option key={e.cityId} value={e.cityId}>
-                  {e.name}
-                </option>
-              );
-            })
-          ) : (
-            <option>loading...</option>
-          )}
-        </Input> */}
-
         <Autocomplete
           id="combo-box-demo"
           options={
@@ -71,7 +48,6 @@ class CityComponent extends Component {
         />
       </div>
     );
-    // <div>{content}</div>;
   }
 }
 

@@ -1,10 +1,10 @@
-var LRU = require("lru-cache");
+const LRU = require("lru-cache");
 
 export default class Cache {
   static lru = new LRU({ max: 100, maxAge: 1000 * 60 * 60 * 24 });
 
   static getParameter = (paramType) => {
-    var key = "prm_" + paramType;
+    let key = "prm_" + paramType;
     if (Cache.lru.has(key)) {
       return Cache.lru.get(key);
     } else {
@@ -13,7 +13,7 @@ export default class Cache {
   };
 
   static setParameter(paramType, value) {
-    var key = "prm_" + paramType;
+    let key = "prm_" + paramType;
     if (!Cache.lru.has(key)) {
       return Cache.lru.set(key, value);
     } else {

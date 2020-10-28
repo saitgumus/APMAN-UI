@@ -1,11 +1,11 @@
 import "bootstrap/dist/css/bootstrap.css";
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
+import {BrowserRouter} from "react-router-dom";
 import App from "./App";
-import { Provider as AlertProvider } from "react-alert";
+import {Provider as AlertProvider} from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
-import { Provider } from "react-redux";
+import {Provider} from "react-redux";
 import configureStore from "./redux/reducers/configure-store";
 
 //import registerServiceWorker from "./registerServiceWorker";
@@ -15,23 +15,23 @@ const rootElement = document.getElementById("root");
 
 // optional cofiguration
 const options = {
-  position: "bottom center",
-  timeout: 5000,
-  offset: "30px",
-  transition: "scale",
+    position: "bottom center",
+    timeout: 5000,
+    offset: "30px",
+    transition: "scale",
 };
 
 const store = configureStore();
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Provider store={store}>
-      <AlertProvider template={AlertTemplate} {...options}>
-        <App />
-      </AlertProvider>
-    </Provider>
-  </BrowserRouter>,
-  rootElement
+    <BrowserRouter>
+        <AlertProvider template={AlertTemplate} {...options}>
+            <Provider store={store}>
+                <App/>
+            </Provider>
+        </AlertProvider>
+    </BrowserRouter>,
+    rootElement
 );
 
 //registerServiceWorker();

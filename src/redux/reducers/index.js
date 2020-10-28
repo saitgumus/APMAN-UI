@@ -10,6 +10,7 @@ import changeSelectedCityReducer from "./change-selected-city-reducer";
 import defineBlockReducer from "./definingReducers/define-block-reducer";
 import actionListReducer from "./actionReducers/action-list-reducer";
 import actionExecuteReducer from "./actionReducers/action-execute-reducer";
+import backdropStatusReducer from "./actionReducers/change-backdrop-status-reducer";
 
 const rootReducer = combineReducers({
   loginReducer,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   defineBlockReducer,
   actionListReducer,
   actionExecuteReducer,
+  backdropStatusReducer
 });
 
 export default rootReducer;

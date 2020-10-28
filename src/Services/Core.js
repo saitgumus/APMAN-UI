@@ -1,7 +1,7 @@
-import Axios from "axios";
 import { CommonTypes } from "../Types/Common";
 import { Response } from "../Models/kernel";
 import Cache from "./Cache";
+import {HttpClientServiceInstance} from "./HttpClient";
 
 /**
  * the parameter services
@@ -9,21 +9,21 @@ import Cache from "./Cache";
 export class ParameterService {
   /**
    * parametre listesi döndürür.
-   * @param {"paramtype"} parametre
+   * @param {String} paramType - parametre tipi
    */
   async GetParameter(paramType) {
     if (!paramType || paramType.length < 1) {
       return new Response(false, "parametre tipi boş olmamalı.");
     }
 
-    var parameters = [];
+    let parameters = [];
     let returnObject = new Response();
 
-    await Axios.post(CommonTypes.GetUrlForAPI("core", "getparameter"), {
+    await HttpClientServiceInstance.post(CommonTypes.GetUrlForAPI("core", "getparameter"), {
       ParamType: paramType,
     })
       .then((res) => {
-        var data = res.data;
+        let data = res.data;
         if (data && data.length > 0) {
           data.forEach((element) => {
             parameters.push(element);

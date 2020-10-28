@@ -13,7 +13,7 @@ export function IsNullOrEmpty(text) {
  * string builder
  */
 export function StringBuilder() {
-  var values = [];
+  let values = [];
 
   return {
     append: function (value) {

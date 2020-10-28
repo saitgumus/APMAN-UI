@@ -14,7 +14,7 @@ import { getActionLabel } from "../../Types/Common";
  * @param {props} props (key,icon,text)
  */
 const Action = (props) => {
-  let key = props.Key;
+  let key = props.ActionKey;
 
   return (
     <div>

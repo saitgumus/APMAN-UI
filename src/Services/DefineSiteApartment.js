@@ -1,7 +1,6 @@
-//import Parameter from "../Models/Parameter";
-import Axios from "axios";
 import { CommonTypes } from "../Types/Common";
 import { Response, Result, Severity } from "../Core/Response";
+import {HttpClientServiceInstance} from "./HttpClient";
 //import Cache from "./Cache";
 
 /**
@@ -10,8 +9,12 @@ import { Response, Result, Severity } from "../Core/Response";
  * @param {object} siteApartmentContract
  */
 export async function DefineSiteApartmentService(siteApartmentContract) {
-  var returnObject = new Response();
+  const returnObject = new Response();
+  let user = JSON.parse(localStorage.getItem("user" || {}))
 
+  if(!user || user.userName.length < 1){
+    new Result("user","Yeniden giriş yapınız.",Severity.Low);
+  }
   if (!siteApartmentContract) {
     returnObject.Results.push(
       new Result("null", "apartman bilgisi boş olamaz.", Severity.Low)
@@ -19,14 +22,15 @@ export async function DefineSiteApartmentService(siteApartmentContract) {
     returnObject.success = false;
     return returnObject;
   }
+  siteApartmentContract.managerUserName = user.userName;
 
-  await Axios.post(
+  await HttpClientServiceInstance.post(
     CommonTypes.GetUrlForAPI("apartment", "saveapartment"),
     siteApartmentContract
   ).then((res) => {
     if (res.status === CommonTypes.ResponseStatusCode.successful.created) {
       //todo: will set.
-      console.log("defined new apartment.");
+      console.log("defined new apartment.",siteApartmentContract.name);
       returnObject.success = true;
     }
   });

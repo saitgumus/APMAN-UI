@@ -8,7 +8,6 @@ const kafka = new Kafka(config);
 const producer = kafka.producer();
 
 export default async function runProducer() {
-  debugger;
   const message = {
     nTransOrderID: 1000,
     sTransOrderCode: "TO-101212",

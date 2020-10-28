@@ -7,12 +7,12 @@ function ShowMessage(props) {
   const alert = useAlert();
 
   let show = () => {
-    if (!props.messageObject) {
+    if (!props.messageObject || props.messageObject.message.length < 1) {
       return;
     }
 
-    var type = props.messageObject.messageType;
-    var message = props.messageObject.message;
+    let type = props.messageObject.messageType;
+    let message = props.messageObject.message;
     switch (type) {
       case CommonTypes.MessageTypes.success:
         alert.success(message);

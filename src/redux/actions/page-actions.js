@@ -1,7 +1,6 @@
 import { CommonTypes } from "../../Types/Common";
 import * as actionTypes from "./action-types";
 //import LogMessage from "../../Services/Log";
-//import Axios from "axios";
 //import Cache from "../../Services/Cache";
 
 //#region get actions
@@ -15,9 +14,22 @@ export function changeActiveResourceCode(resourceCode) {
 
   // LogMessage("test message");
   switch (resourceCode) {
+    //apartman tanımlama
     case CommonTypes.Resources.defineSiteApartment.resourceCode:
       actionKeys.push.apply(actionKeys, [CommonTypes.ActionKeys.Save]);
       break;
+      //üye ekle
+    case CommonTypes.Resources.defineMember.resourceCode:
+      actionKeys.push.apply(
+        actionKeys,
+        CommonTypes.Resources.defineMember.actionKeys
+      );
+      break;
+      //üye listele
+    case CommonTypes.Resources.memberList.resourceCode:
+      actionKeys.push(...actionKeys,CommonTypes.Resources.memberList.actionKeys);
+      break;
+      
     default:
       break;
   }
@@ -57,4 +69,20 @@ export function executeSuccess(onExecute) {
   };
 }
 
+//#endregion
+
+//#region backdrop
+
+export function changeBackDropStatus(status) {
+return function (dispatch) {
+  return dispatch(changeBackDropSuccess(status));
+}
+}
+
+export function changeBackDropSuccess(status){
+  return {
+    type:actionTypes.BACKDROP_STATUS,
+    payload:status
+  }
+}
 //#endregion

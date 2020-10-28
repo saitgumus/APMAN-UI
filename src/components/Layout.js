@@ -1,17 +1,34 @@
 import React from "react";
-//import { Container } from "reactstrap";
-//import { NavMenu } from "./NavMenu";
 import TabIn from "./Begin/TabIn";
 import Messages from "../Types/Messages";
 import { connect } from "react-redux";
 import AppBarMenu from "./Navigation/app-bar";
-import { Backdrop, CircularProgress, Container } from "@material-ui/core";
+import { Container } from "@material-ui/core";
 import ActionBar from "./Navigation/action-bar";
 import ShowMessage from "./ShowMessage";
-//import { ActionContext } from "./Kernel/Context";
+
+import BackdropComponent from "./ToolBox/backdrop";
+import { bindActionCreators } from "redux";
+import * as messageActions from "../redux/actions/message-actions";
+import * as pageActions from "../redux/actions/page-actions";
+import User from "../Models/User";
 
 function Layout(props) {
   let loginControl = () => {
+    //let usr = window.localStorage.getItem("user");
+    window.localStorage.removeItem("user");
+    let userc = new User();
+    userc.firstName = "api";
+    userc.lastName = "api";
+    userc.email = "api@gmail.com";
+    userc.token = "asdasffasdf";
+    userc.userName = "api";
+    window.localStorage.setItem("user", JSON.stringify(userc));
+    console.log("user active :", userc);
+
+    return props.children;
+    //todo: test e çıkmadan önce log-in geri aktifleştirilecek.
+    // eslint-disable-next-line no-unreachable
     if (props.loginJwtObject && props.loginJwtObject.isSuccess) {
       return props.children;
     } else {
@@ -26,25 +43,35 @@ function Layout(props) {
 
   return (
     <div>
-      <ShowMessage></ShowMessage>
-      <Backdrop
-        open={false}
-        onClick={(e) => {
-          //setBackdrop(!backdrop);
-        }}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
       <AppBarMenu>
+        <BackdropComponent />
         <Container maxWidth="xl">
-          <ActionBar></ActionBar>
-          {loginControl()}
+          <ActionBar />
+          {props.loginJwtObject ? loginControl() : <p />}
+          <ShowMessage />
         </Container>
       </AppBarMenu>
     </div>
   );
 }
-//}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      /**
+       * showStatusMessage(message, type)
+       */
+      showMessage: bindActionCreators(
+        messageActions.showStatusMessage,
+        dispatch
+      ),
+      changeBackdropStatus: bindActionCreators(
+        pageActions.changeBackDropStatus,
+        dispatch
+      ),
+    },
+  };
+}
 
 function mapStateToProps(state) {
   return {
@@ -52,4 +79,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Layout);
+export default connect(mapStateToProps, mapDispatchToProps)(Layout);

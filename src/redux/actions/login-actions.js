@@ -1,7 +1,16 @@
 import * as actionTypes from "./action-types";
 import { CommonTypes } from "../../Types/Common";
-import Axios from "axios";
+//import Axios from "axios";
+import { HttpClientServiceInstance } from "../../Services/HttpClient";
+import User from "../../Models/User";
+//import Log from "../../Services/Log";
 
+/**
+ * 
+ * @param {User}
+ * @returns {{payload: *, type: string}}
+ * @constructor
+ */
 export function LoginSuccess(userContract) {
   return {
     type: actionTypes.LOGIN,
@@ -35,14 +44,31 @@ export function ChangeLoginStatus(jwtObject) {
 export function Login(user) {
   return function (dispatch) {
     let url = CommonTypes.GetUrlForAPI("user", "login");
-    return Axios.post(url, user)
+    return HttpClientServiceInstance.post(url, user)
       .then((res) => {
-        if (res.data && res.data.token) {
-          dispatch(LoginSuccess(res.data));
-        } else {
-          dispatch(LoginSuccess({ token: "null", expiration: new Date() }));
-        }
+        let data = res.data.user;
+
+        user = new User();
+        user.userId = data.userId;
+        user.email = data.email;
+        user.firstName = data.firstName;
+        user.lastName = data.lastName;
+        user.userName = data.userName;
+        user.token = res.data.token.token;
+        user.expiration = res.data.token.expiration;
+
+        localStorage.setItem("user",JSON.stringify(user));
+        HttpClientServiceInstance.setTokenOnLogin(user.token);
+          dispatch(LoginSuccess(user));
+          //test
+          dispatch(ChangeLoginStatusSuccess(user.token,user.expiration,true))
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+          debugger;
+          if(e.response.status === 401){
+              dispatch(ChangeLoginStatusSuccess("",new Date(),false))
+          }
+        dispatch(LoginSuccess(new User()));
+      });
   };
 }

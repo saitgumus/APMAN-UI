@@ -4,7 +4,6 @@ import runProducer from "./Kafka/producer";
 //#region kafkajs
 
 export default function LogMessage(message) {
-  debugger;
   console.log(message);
   runProducer();
 }

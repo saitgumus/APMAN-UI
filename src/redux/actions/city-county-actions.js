@@ -1,7 +1,7 @@
 import { CommonTypes } from "../../Types/Common";
 import * as actionTypes from "./action-types";
-import Axios from "axios";
 import Cache from "../../Services/Cache";
+import {HttpClientServiceInstance} from "../../Services/HttpClient";
 
 export function getCityListSuccess(city) {
   return {
@@ -26,7 +26,9 @@ export function getCityList() {
     }
 
     let url = CommonTypes.GetUrlForAPI("core", "citylist");
-    return Axios.post(url).then((res) => {
+    
+    return HttpClientServiceInstance.post(url)
+        .then((res) => {
       if (!Cache.lru.has(CommonTypes.CacheKeys.CountyList)) {
         Cache.lru.set(
           CommonTypes.CacheKeys.CountyList,
@@ -53,7 +55,7 @@ export function getCountyListAll() {
       );
     }
     let url = CommonTypes.GetUrlForAPI("core", "countylist");
-    return Axios.post(url).then((res) => {
+    return HttpClientServiceInstance.post(url).then((res) => {
       //caching yapılır..
       if (!Cache.lru.has(CommonTypes.CacheKeys.CountyList)) {
         Cache.lru.set(

@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import { CommonTypes } from "../Types/Common";
+//import { CommonTypes } from "../Types/Common";
 import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -53,7 +53,7 @@ function ShowDialogMessage(props) {
         key={messageInfo ? messageInfo.key : undefined}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "left",
+          horizontal: "center",
         }}
         open={open}
         autoHideDuration={5000}

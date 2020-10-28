@@ -5,6 +5,7 @@ import { Home } from "./components/Home";
 import { FetchData } from "./components/FetchData";
 import { Counter } from "./components/Counter";
 import DefineSiteApartment from "./components/Admin/SiteApartment/DefineSiteApartment";
+import MemberDefine from "./components/Admin/Member/member-define";
 
 export default class App extends Component {
   static displayName = App.name;
@@ -19,6 +20,7 @@ export default class App extends Component {
           path="/admin/definesiteapartment"
           component={DefineSiteApartment}
         />
+        <Route path="/admin/definemember" component={MemberDefine} />
       </Layout>
     );
   }

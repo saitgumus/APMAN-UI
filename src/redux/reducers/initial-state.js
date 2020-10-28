@@ -1,30 +1,41 @@
 import Parameter from "../../Models/Parameter";
-import { CommonTypes } from "../../Types/Common";
 
 export default {
-  user: {
+  registerUser: {
     name: "redux-test-user-name",
+    isRegistered:false
+  },
+  loginUser:{
+    userId:-1,
+    userName:"",
+    firstName:"",
+    lastName:"",
+    email:"",
+    token:"",
+    expiration:new Date()
   },
   cityList: [
     {
-      0: "select",
+      name: "Seçiniz",
+      cityId:-1
     },
   ],
   selectedCityId: -1,
   countyList: [
     {
-      0: "select",
+      name: "Seçiniz",
+      countyId:-1
     },
   ],
   parameterList: [initialParameter()],
   jwtObject: {
-    token: "null",
+    token: "",
     expiration: new Date(),
-    isSuccess: true,
+    isSuccess: false,
   },
   messageObject: {
-    messageType: CommonTypes.MessageTypes.info,
-    message: "initial message",
+    messageType: "",
+    message: "",
   },
   blockList: [
     {
@@ -47,10 +58,11 @@ export default {
       alert("executed redux function");
     },
   },
+  backDropStatus:false,
 };
 
 function initialParameter() {
-  var initialParameter = new Parameter();
+  let initialParameter = new Parameter();
   initialParameter.ParamCode = -1;
   initialParameter.ParamType = "no param";
   return initialParameter;

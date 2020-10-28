@@ -7,8 +7,8 @@ export class CommonTypes {
 
   /**
    *
-   * @param {controller} controllerName
-   * @param {action} actionName
+   * @param {string} controllerName
+   * @param {string} actionName
    */
   static GetUrlForAPI(controllerName, actionName) {
     return this.URLaddress.concat(
@@ -37,7 +37,14 @@ export class CommonTypes {
    * aksiyon isimleri
    */
   static ActionKeys = {
+    /**
+     * kaydet
+     */
     Save: "SAVE",
+    /**
+     * bilgi getir (listele)
+     */
+    GetList:"GETLIST"
   };
 
   /**
@@ -49,6 +56,7 @@ export class CommonTypes {
     delete: "delete",
     info: "info",
     close: "close",
+    list:"list"
   };
 
   /**
@@ -65,6 +73,20 @@ export class CommonTypes {
       resourceCode: "DEFAPT",
       actionKeys: [CommonTypes.ActionKeys.Save],
     },
+    /**
+     * üye ekle
+     */
+    defineMember: {
+      resourceCode: "DEFMEM",
+      actionKeys: [CommonTypes.ActionKeys.Save],
+    },
+    /**
+     * üye listeleme
+     */
+    memberList:{
+      resourceCode:"DEFLST",
+      actionKeys:[CommonTypes.ActionKeys.GetList]
+    }
   };
 
   /**
