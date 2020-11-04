@@ -1,7 +1,7 @@
 import { CommonTypes } from "../Types/Common";
 import { Response } from "../Models/kernel";
 import Cache from "./Cache";
-import {HttpClientServiceInstance} from "./HttpClient";
+import { HttpClientServiceInstance } from "./HttpClient";
 
 /**
  * the parameter services
@@ -19,9 +19,12 @@ export class ParameterService {
     let parameters = [];
     let returnObject = new Response();
 
-    await HttpClientServiceInstance.post(CommonTypes.GetUrlForAPI("core", "getparameter"), {
-      ParamType: paramType,
-    })
+    await HttpClientServiceInstance.post(
+      CommonTypes.GetUrlForAPI("core", "getparameter"),
+      {
+        ParamType: paramType,
+      }
+    )
       .then((res) => {
         let data = res.data;
         if (data && data.length > 0) {
@@ -40,4 +43,33 @@ export class ParameterService {
 
     return returnObject;
   }
+}
+
+/**
+ * rol listesini döndürür
+ */
+export async function GetRoleList() {
+  let returnData = [];
+
+  if (Cache.lru.has("rolelist")) {
+    let listfromcache = Cache.lru.get("managerapartmentlist");
+    returnData = listfromcache;
+  }
+
+  await HttpClientServiceInstance.post(
+    CommonTypes.GetUrlForAPI("core", "getrolelist")
+  )
+    .then((res) => {
+      let data = res.data;
+      if (data && data.length > 0) {
+        Cache.lru.set("rolelist", data);
+      }
+      returnData = data ? data : [];
+    })
+    .catch((e) => {
+      console.log(e);
+      returnData = undefined;
+    });
+
+  return returnData;
 }
