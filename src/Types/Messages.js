@@ -26,6 +26,12 @@ export default class Messages {
     enter: "Giriş Yap",
     /**ekle */
     add: "Ekle",
+    /** bilgi getir, listele*/
+    getInfo:"Bilgi Getir",
+    /* güncelle */
+    edit:"Güncelle",
+    /* kapat */
+    close:"Kapat"
   };
 
   static LabelNames = {

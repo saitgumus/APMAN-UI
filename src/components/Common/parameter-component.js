@@ -1,7 +1,7 @@
 import { TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import React, { Component } from "react";
-import { ParameterService } from "../../Services/Core";
+import { ParameterService } from "../../Services/CoreService";
 
 export default class ParameterComponent extends Component {
   constructor(props) {
@@ -35,7 +35,7 @@ export default class ParameterComponent extends Component {
     return (
       <div>
         <Autocomplete
-          id="combo-box-demo"
+          id="combo-box-demo-prm"
           options={this.state.data}
           getOptionLabel={(option) => option.paramDescription}
           style={{ width: 300 }}

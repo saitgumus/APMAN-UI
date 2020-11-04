@@ -5,4 +5,8 @@ export class MemberUserContract {
   email;
   floorNumber;
   doorNumber;
+  roleId;
+  userId;
+  apartmentName;
+  roleName;
 }

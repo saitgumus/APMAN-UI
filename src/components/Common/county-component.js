@@ -22,15 +22,15 @@ class CountyComponent extends Component {
   }
 
   createContent(countyList, cityId) {
-    var filtered = countyList.filter((x) => x.cityId === parseInt(cityId));
+    let filtered = countyList.filter((x) => x.cityId === parseInt(cityId));
     if (!filtered || filtered.length < 1) {
       return (
-        <div>
+        <React.Fragment>
           <Autocomplete
-            id="combo-box-demo"
+              fullWidth={true}
+            id="combo-box-demo-county"
             options={[{ name: "test", id: 1 }]}
             getOptionLabel={(option) => option.name}
-            style={{ width: 300 }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -39,22 +39,23 @@ class CountyComponent extends Component {
               />
             )}
           />
-        </div>
+        </React.Fragment>
       );
     }
 
     return (
-      <div>
+      <React.Fragment>
         <Autocomplete
-          id="combo-box-demo"
+          id="combo-box-demo-county"
           options={filtered}
           getOptionLabel={(option) => option.name}
-          style={{ width: 300 }}
+          fullWidth={true}
           renderInput={(params) => (
             <TextField
               {...params}
               label={Messages.LabelNames.county}
               variant="outlined"
+              fullWidth={true}
             />
           )}
           onChange={(e, value, reason) => {
@@ -66,7 +67,7 @@ class CountyComponent extends Component {
             }
           }}
         />
-      </div>
+      </React.Fragment>
     );
   }
 

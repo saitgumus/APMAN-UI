@@ -25,16 +25,16 @@ class CityComponent extends Component {
     return (
       <div>
         <Autocomplete
-          id="combo-box-demo"
+          id="combo-box-demo-city"
           options={
             this.props.cityList && this.props.cityList.length > 1
               ? this.props.cityList
               : [{ name: "" }]
           }
           getOptionLabel={(option) => option.name}
-          style={{ width: 300 }}
+          fullWidth={true}
           renderInput={(params) => (
-            <TextField {...params} label="İl" variant="outlined" />
+            <TextField {...params} label="İl" variant="outlined" fullWidth={true}/>
           )}
           onChange={(e, value, reason) => {
             //value : cityContract

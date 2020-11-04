@@ -15,7 +15,6 @@ import {
     TextField,
     Grid,
     Card,
-    CardContent,
     List,
     ListItem,
     Paper,
@@ -23,8 +22,11 @@ import {
 
 import {DefineSiteApartmentService} from "../../../Services/DefineSiteApartment";
 import BlockDefinition from "../../ToolBox/popup-block-definition";
-import {IsNullOrEmpty} from "../../Utils/Helper";
+import {IsNullOrEmpty, StringBuilder} from "../../../Core/Helper";
 
+/**
+ * yeni apartman kaydı yapar
+ */
 class DefineSiteApartment extends Component {
     dataContract = new ApartmentContract();
 
@@ -57,7 +59,23 @@ class DefineSiteApartment extends Component {
         switch (key) {
             case CommonTypes.ActionKeys.Save:
                 if (this.controlDataContract())
-                    DefineSiteApartmentService(this.dataContract);
+                    DefineSiteApartmentService(this.dataContract)
+                        .then(
+                            res => {
+                                if (res.success) {
+                                    this.props.showMessage("Apartman kaydedildi.", CommonTypes.MessageTypes.success);
+                                } else {
+                                    let messagebuilder = new StringBuilder();
+                                    messagebuilder.append("Apartman kaydedilirken hata oluştu.");
+                                    messagebuilder.appendLine(res.getResultsStringFormat());
+                                    this.props.showMessage(messagebuilder.toString(), CommonTypes.MessageTypes.error);
+                                }
+                            }
+                        ).catch(
+                        err => {
+                            console.log(err);
+                        }
+                    )
                 break;
             default:
                 break;
@@ -173,71 +191,67 @@ class DefineSiteApartment extends Component {
 
     render() {
         return (
-            <Card>
-                <CardContent>
-                    <Grid container spacing={1}>
-                        <Grid container spacing={3}>
-                            <Grid item md={4}>
-                                <ParameterComponent
-                                    paramType="siteapt"
-                                    labelName={Messages.LabelNames.recordType}
-                                    isAllOption={true}
-                                    onSelectParameter={(val) => {
-                                        if (val > 0) {
-                                            this.setState(
-                                                Object.assign({}, this.state, {
-                                                    selectedParamCode: val,
-                                                })
-                                            );
-                                        }
-                                    }}
-                                />
-                                {this.renderForParameter()}
-                                <List>{this.getBlockList()}</List>
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={3}>
-                            <Grid item md={4}>
-                                <CityComponent
-                                    onSelectedCity={(cityContract) => {
-                                        this.dataContract.cityId = cityContract.cityId;
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item md={4}>
-                                <CountyComponent
-                                    onSelectedCounty={(contract) => {
-                                        this.dataContract.countyId = contract.countyId;
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item md={4}>
-                                <TextField
-                                    id="outlined-basic"
-                                    label={Messages.LabelNames.zipcode}
-                                    variant="outlined"
-                                    type="number"
-                                    onChange={(e) => {
-                                        this.dataContract.zipCode = e.target.value;
-                                    }}
-                                />
-                            </Grid>
-                        </Grid>
-                        <Grid item xl={6}>
-                            <TextField
-                                id="outlined-basic"
-                                label={Messages.LabelNames.address}
-                                multiline
-                                rows={5}
-                                variant="outlined"
-                                onChange={(e) => {
-                                    this.dataContract.addressText = e.target.value;
+            <div className={'apman-layout-root'}>
+                <Grid container spacing={4}>
+                    <Grid item xs={12} sm={12}>
+                        <ParameterComponent
+                            paramType="siteapt"
+                            labelName={Messages.LabelNames.recordType}
+                            isAllOption={true}
+                            onSelectParameter={(val) => {
+                                if (val > 0) {
+                                    this.setState(
+                                        Object.assign({}, this.state, {
+                                            selectedParamCode: val,
+                                        })
+                                    );
+                                }
+                            }}
+                        />
+                        {this.renderForParameter()}
+                        <List>{this.getBlockList()}</List>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                            <CityComponent
+                                onSelectedCity={(cityContract) => {
+                                    this.dataContract.cityId = cityContract.cityId;
                                 }}
                             />
-                        </Grid>
                     </Grid>
-                </CardContent>
-            </Card>
+                    <Grid item xs={12} sm={6}>
+                            <CountyComponent
+                                onSelectedCounty={(contract) => {
+                                    this.dataContract.countyId = contract.countyId;
+                                }}
+                            />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth={true}
+                                id="outlined-basic"
+                                label={Messages.LabelNames.zipcode}
+                                variant="outlined"
+                                type="number"
+                                onChange={(e) => {
+                                    this.dataContract.zipCode = e.target.value;
+                                }}
+                            />
+                    </Grid>
+                    <Grid item xl={6}>
+                        <TextField
+                            fullWidth={true}
+                            id="outlined-basic"
+                            label={Messages.LabelNames.address}
+                            multiline
+                            rows={5}
+                            variant="outlined"
+                            onChange={(e) => {
+                                this.dataContract.addressText = e.target.value;
+                            }}
+                        />
+                    </Grid>
+                </Grid>
+            </div>
         );
     }
 }

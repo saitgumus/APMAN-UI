@@ -1,19 +1,29 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import {Card, CardContent, Grid} from "@material-ui/core";
 import {bindActionCreators} from "redux";
 import * as messageActions from "../../redux/actions/message-actions";
 import Action from "../ToolBox/action";
 import {CommonTypes} from "../../Types/Common";
 
 import SaveIcon from "@material-ui/icons/Save";
+import ListIcon from '@material-ui/icons/List';
+import CreateIcon from '@material-ui/icons/Create'; //düzenle
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew'; //kapat
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 
 class ActionBar extends Component {
     getIcon = (key) => {
         switch (key) {
             case CommonTypes.ActionKeys.Save:
                 return <SaveIcon/>;
-
+            case CommonTypes.ActionKeys.GetList:
+                return <ListIcon/>
+            case CommonTypes.ActionKeys.Clean:
+                return <InsertDriveFileIcon/>
+            case CommonTypes.ActionKeys.Edit:
+                return <CreateIcon/>
+            case CommonTypes.ActionKeys.Close:
+                return <PowerSettingsNewIcon/>
             default:
                 break;
         }
@@ -34,7 +44,7 @@ class ActionBar extends Component {
                 (value, index) => {
                     return (
                         <Action
-                            key={index+"apbar"}
+                            key={index + "apbar"}
                             ActionKey={value}
                             Icon={this.getIcon(value)}
                             ResourceCode={this.props.actionListInfo.resourceCode}
@@ -51,18 +61,9 @@ class ActionBar extends Component {
 
     render() {
         return (
-            <Card>
-                <CardContent>
-                    <Grid
-                        container
-                        direction="row"
-                        justify="flex-start"
-                        alignItems="flex-start"
-                    >
-                        {this.generateActions()}
-                    </Grid>
-                </CardContent>
-            </Card>
+           <div>
+               {this.generateActions()}
+           </div>
         );
     }
 }

@@ -24,7 +24,7 @@ class BackdropComponent extends Component {
                 <Backdrop
                     open={!!(this.props.backdropStatus && this.props.backdropStatus === true)}
                 >
-                    <CircularProgress color="inherit" />
+                    <CircularProgress color="secondary" />
                 </Backdrop>
             </React.Fragment>
         );

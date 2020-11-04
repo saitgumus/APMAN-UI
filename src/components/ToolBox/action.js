@@ -6,7 +6,7 @@ import InfoIcon from "@material-ui/icons/Info";
 import { bindActionCreators } from "redux";
 import * as messageActions from "../../redux/actions/message-actions";
 import * as pageActions from "../../redux/actions/page-actions";
-import { getActionLabel } from "../../Types/Common";
+import {CommonTypes, getActionLabel} from "../../Types/Common";
 
 /**
  * action bar için aksiyon döndürür.
@@ -16,13 +16,14 @@ import { getActionLabel } from "../../Types/Common";
 const Action = (props) => {
   let key = props.ActionKey;
 
+  console.log("key: ",key)
   return (
-    <div>
+    <div style={{display:"inline-block", marginLeft:"15px"}}>
       {key ? (
         <Button
           variant="contained"
-          color="primary"
-          size="medium"
+          color={(key === CommonTypes.ActionKeys.Close)?"secondary":"primary"}
+          size="small"
           startIcon={props.Icon ? props.Icon : <InfoIcon />}
           onClick={(e) => {
             if (props.onExecuteCommand && props.onExecuteCommand.onExecute)
@@ -32,7 +33,7 @@ const Action = (props) => {
           {getActionLabel(key)}
         </Button>
       ) : (
-        <div></div>
+        <div/>
       )}
     </div>
   );

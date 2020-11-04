@@ -1,7 +1,7 @@
 import { CommonTypes } from "../Types/Common";
-import { Response } from "../Models/kernel";
 import Cache from "./Cache";
 import { HttpClientServiceInstance } from "./HttpClient";
+import {Response, Severity} from "../Core/Response";
 
 /**
  * the parameter services
@@ -12,12 +12,14 @@ export class ParameterService {
    * @param {String} paramType - parametre tipi
    */
   async GetParameter(paramType) {
-    if (!paramType || paramType.length < 1) {
-      return new Response(false, "parametre tipi boş olmamalı.");
+      let returnObject = new Response();
+
+      if (!paramType || paramType.length < 1) {
+          returnObject.addResult('Parametre tipi alınamadı.',Severity.Low)
+      return returnObject;
     }
 
     let parameters = [];
-    let returnObject = new Response();
 
     await HttpClientServiceInstance.post(
       CommonTypes.GetUrlForAPI("core", "getparameter"),
@@ -38,7 +40,7 @@ export class ParameterService {
       })
       .catch((e) => {
         console.log(e);
-        returnObject = new Response(false, "parametre alınamadı.");
+        returnObject.addResult('parametre listesi getirilemedi.',Severity.Low)
       });
 
     return returnObject;

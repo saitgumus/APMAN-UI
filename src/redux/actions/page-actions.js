@@ -11,7 +11,6 @@ import * as actionTypes from "./action-types";
  */
 export function changeActiveResourceCode(resourceCode) {
   let actionKeys = [];
-
   // LogMessage("test message");
   switch (resourceCode) {
     //apartman tanımlama
@@ -27,7 +26,7 @@ export function changeActiveResourceCode(resourceCode) {
       break;
       //üye listele
     case CommonTypes.Resources.memberList.resourceCode:
-      actionKeys.push(...actionKeys,CommonTypes.Resources.memberList.actionKeys);
+      actionKeys.push.apply(actionKeys,CommonTypes.Resources.memberList.actionKeys);
       break;
       
     default:

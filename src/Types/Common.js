@@ -44,7 +44,19 @@ export class CommonTypes {
     /**
      * bilgi getir (listele)
      */
-    GetList:"GETLIST"
+    GetList:"GETLIST",
+    /**
+     * Temizle
+     */
+    Clean:"CLEAN",
+    /**
+     * kapat
+     */
+    Close:"CLOSE",
+    /**
+     * düzenle / güncelle
+     */
+    Edit:"EDIT"
   };
 
   /**
@@ -74,7 +86,7 @@ export class CommonTypes {
       actionKeys: [CommonTypes.ActionKeys.Save],
     },
     /**
-     * üye ekle
+     * üye tanımlama
      */
     defineMember: {
       resourceCode: "DEFMEM",
@@ -85,7 +97,14 @@ export class CommonTypes {
      */
     memberList:{
       resourceCode:"DEFLST",
-      actionKeys:[CommonTypes.ActionKeys.GetList]
+      actionKeys:[CommonTypes.ActionKeys.GetList,CommonTypes.ActionKeys.Edit]
+    },
+    /**
+     * kullanıcı profili
+     */
+    userProfile:{
+      resourceCode:"USRPRF",
+      actionKeys:[CommonTypes.ActionKeys.Close]
     }
   };
 
@@ -121,10 +140,21 @@ export class CommonTypes {
   };
 }
 
+/**
+ * aksiyon ismini verir
+ * @param key
+ * @returns {string}
+ */
 export function getActionLabel(key) {
   switch (key) {
     case CommonTypes.ActionKeys.Save:
       return Messages.ActionNames.save;
+    case CommonTypes.ActionKeys.GetList:
+      return Messages.ActionNames.getInfo;
+    case CommonTypes.ActionKeys.Edit:
+      return Messages.ActionNames.edit;
+    case CommonTypes.ActionKeys.Close:
+      return Messages.ActionNames.close;
     default:
       return "action";
   }
