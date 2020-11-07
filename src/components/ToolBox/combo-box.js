@@ -8,23 +8,34 @@ import { TextField } from "@material-ui/core";
  * @param {*} props props
  */
 function ComboBox(props) {
-  let defaultItemSource = [{ name: "" }];
+  let defaultItem = [{ name: "" }];
+
+  let data =
+    props.itemSource && props.itemSource.length > 0
+      ? props.itemSource
+      : defaultItem;
+  let val = props.defaultValue
+    ? data.find((v) => v === props.defaultValue)
+    : data[0];
 
   return (
     <div>
       <Autocomplete
         id="combo-box-demo"
-        options={props.itemSource ? props.itemSource : defaultItemSource}
+        options={data}
+        value={val ? val : data[0]}
         getOptionLabel={(option) => option.name}
         renderInput={(params) => (
           <TextField {...params} label={props.label} variant="outlined" />
         )}
         onChange={(e, value, reason) => {
-          if (props.onSelectedItemChange) {
+          val = value;
+          if (props.onSelectedItemChange && value) {
             props.onSelectedItemChange(value);
           }
         }}
         fullWidth
+        disabled={props.disabled}
       />
     </div>
   );

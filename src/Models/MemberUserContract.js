@@ -1,4 +1,5 @@
 export class MemberUserContract {
+  memberId;
   apartmentId;
   firstName;
   lastName;
@@ -9,4 +10,5 @@ export class MemberUserContract {
   userId;
   apartmentName;
   roleName;
+  addressId;
 }

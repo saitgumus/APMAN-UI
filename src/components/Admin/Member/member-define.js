@@ -7,6 +7,8 @@ import { TextField, Grid, Paper } from "@material-ui/core";
 import {
   GetApartmentListByManagerUserName,
   SaveNewMember,
+  GetMemberDetailByMemberId,
+  UpdateMemberUser,
 } from "../../../Services/MemberDefineService";
 import ComboBox from "../../ToolBox/combo-box";
 import * as messageActions from "../../../redux/actions/message-actions";
@@ -22,21 +24,62 @@ const style = {
   },
 };
 
+/**
+ * üye tanımlama
+ */
 class MemberDefine extends Component {
   static propTypes = {};
 
+  updateContract = {};
+  //   addressId: 0
+  // addressText: "mersin erdemli asdf"
+  // apartmentId: 5
+  // apartmentName: null
+  // doorNumber: 7
+  // email: "qwe@qwe.com"
+  // firstName: "qwd"
+  // floorNumber: 7
+  // lastName: "ase"
+  // memberId: 6
+  // postCode: "12345"
+  // roleId: 0
+  // roleName: null
+  // userId: 0
+  // userName: ""
+
   constructor(props) {
     super(props);
+    this.dataContract = new MemberUserContract();
+    this.dataContract = {
+      firstName: "",
+      lastName: "",
+      email: "",
+      floorNumber: 0,
+      doorNumber: 0,
+      apartmentId: 0,
+    };
     this.state = {
       apartmentList: [],
       isMailValid: undefined,
+      dataContract: this.dataContract,
+      isUpdate: false,
     };
-    this.dataContract = new MemberUserContract();
   }
 
   //#region life cycle
 
   componentDidMount() {
+    let isUpdate = false;
+    let dtContract = {};
+
+    debugger;
+    if (this.props.location.state && this.props.location.state.isUpdate) {
+      dtContract = this.props.location.state.dataContract;
+      isUpdate = true;
+      this.setState({ isUpdate: true });
+      //this.setState({ updateContract: contract, isUpdate: true });
+    }
+
     this.props.actions.changeBackdropStatus(true);
 
     //#region yöneticisi olunan apartman listesi getirilir.
@@ -54,6 +97,27 @@ class MemberDefine extends Component {
 
     //#endregion
 
+    //#region update ise üye bilgisi alınır.
+
+    if (isUpdate && dtContract.memberId > 0) {
+      this.props.actions.changeBackdropStatus(true);
+
+      GetMemberDetailByMemberId(dtContract.memberId)
+        .then((res) => {
+          if (res.success) {
+            this.setState({ dataContract: res.value });
+          } else {
+            console.log(res.results);
+          }
+        })
+        .catch((e) => console.log(e))
+        .finally(() => {
+          this.props.actions.changeBackdropStatus(false);
+        });
+    }
+
+    //#endregion
+
     //#region action
     if (this.props.actions.changeActiveResourceCode) {
       this.props.actions.changeActiveResourceCode(
@@ -68,25 +132,53 @@ class MemberDefine extends Component {
 
   //#endregion
 
-  onExecute = (key) => {
+  onExecute = async (key) => {
     switch (key) {
       case CommonTypes.ActionKeys.Save:
-        let validateResponse = this.isValidContract(this.dataContract);
+        let validateResponse = this.isValidContract(this.state.dataContract);
         if (validateResponse.success) {
           this.props.actions.changeBackdropStatus(true);
-          SaveNewMember(this.dataContract)
-            .then((res) => {
-              if (res.status === 201) {
-                this.props.actions.showMessage(
-                  "yeni üye eklendi.",
-                  CommonTypes.MessageTypes.success
-                );
-              }
-            })
-            .catch((e) => console.log(e))
-            .finally(() => {
-              this.props.actions.changeBackdropStatus(false);
-            });
+          debugger;
+          if (this.state.isUpdate) {
+            //#region güncelleme yapılır
+
+            await UpdateMemberUser(this.state.dataContract)
+              .then((res) => {
+                if (res.success) {
+                  this.props.actions.showMessage(
+                    "Kayıt güncellendi.",
+                    CommonTypes.MessageTypes.success
+                  );
+                } else {
+                  this.props.actions.showMessage(
+                    res.getResultsStringFormat(),
+                    CommonTypes.MessageTypes.error
+                  );
+                }
+              })
+              .catch((e) => console.log(e))
+              .finally(() => {
+                this.props.actions.changeBackdropStatus(false);
+              });
+            //#endregion
+          } else {
+            //#region yeni üye kaydı yapılır.
+
+            await SaveNewMember(this.state.dataContract)
+              .then((res) => {
+                if (res.status === 201) {
+                  this.props.actions.showMessage(
+                    "yeni üye eklendi.",
+                    CommonTypes.MessageTypes.success
+                  );
+                }
+              })
+              .catch((e) => console.log(e))
+              .finally(() => {
+                this.props.actions.changeBackdropStatus(false);
+              });
+            //#endregion
+          }
         } else {
           let message = validateResponse.getResultsStringFormat();
           this.props.actions.showMessage(
@@ -98,6 +190,7 @@ class MemberDefine extends Component {
 
       case CommonTypes.ActionKeys.Clean:
         this.dataContract = new MemberUserContract();
+        this.setState({ dataContract: new MemberUserContract() });
 
         break;
       default:
@@ -152,7 +245,7 @@ class MemberDefine extends Component {
               <ComboBox
                 label={"Apartman"}
                 onSelectedItemChange={(item) => {
-                  //                   addressId: 8
+                  // addressId: 8
                   // addressText: null
                   // apartmentId: 5
                   // apartmentManagerId: 1
@@ -164,9 +257,20 @@ class MemberDefine extends Component {
                   // zipCode: null
                   // __proto__: Object
                   console.log("selected apartmentId:", item.apartmentId);
-                  this.dataContract.apartmentId = item.apartmentId;
+                  let dt = this.state.dataContract;
+                  dt.apartmentId = item.apartmentId;
+                  dt.addressId = item.addressId;
+                  this.setState({ dataContract: dt });
                 }}
                 itemSource={this.state.apartmentList}
+                defaultValue={
+                  this.state.apartmentList.length > 1
+                    ? this.state.apartmentList.find(
+                        (r) =>
+                          r.apartmentId === this.state.dataContract.apartmentId
+                      )
+                    : undefined
+                }
               />
             </Paper>
           </Grid>
@@ -176,8 +280,11 @@ class MemberDefine extends Component {
                 label="Ad"
                 fullWidth
                 onChange={(e) => {
-                  this.dataContract.firstName = e.target.value;
+                  var dt = this.state.dataContract;
+                  dt.firstName = e.target.value;
+                  this.setState({ dataContract: dt });
                 }}
+                value={this.state.dataContract.firstName}
               />
             </Paper>
           </Grid>
@@ -187,8 +294,11 @@ class MemberDefine extends Component {
                 label="Soyad"
                 fullWidth
                 onChange={(e) => {
-                  this.dataContract.lastName = e.target.value;
+                  var dt = this.state.dataContract;
+                  dt.lastName = e.target.value;
+                  this.setState({ dataContract: dt });
                 }}
+                value={this.state.dataContract.lastName}
               />
             </Paper>
           </Grid>
@@ -200,12 +310,15 @@ class MemberDefine extends Component {
                 fullWidth
                 error={this.state.isMailValid}
                 onChange={(e) => {
-                  this.dataContract.email = e.target.value;
+                  var dt = this.state.dataContract;
+                  dt.email = e.target.value;
+                  this.setState({ dataContract: dt });
                 }}
                 onBlur={(e) => {
                   this.validateEmail(e);
                 }}
                 autoComplete={"username"}
+                value={this.state.dataContract.email}
               />
             </Paper>
           </Grid>
@@ -216,9 +329,15 @@ class MemberDefine extends Component {
                 type="number"
                 fullWidth
                 onChange={(e) => {
-                  let flrNumber = parseInt(e.target.value);
-                  this.dataContract.floorNumber = flrNumber;
+                  let flrNumber = "";
+                  if (e.target.value) {
+                    flrNumber = parseInt(e.target.value);
+                  }
+                  let dt = this.state.dataContract;
+                  dt.floorNumber = flrNumber;
+                  this.setState({ dataContract: dt });
                 }}
+                value={this.state.dataContract.floorNumber}
               />
             </Paper>
           </Grid>
@@ -229,9 +348,16 @@ class MemberDefine extends Component {
                 type="number"
                 fullWidth
                 onChange={(e) => {
-                  let doorn = parseInt(e.target.value);
-                  this.dataContract.doorNumber = doorn;
+                  let doorn = "";
+                  if (e.target.value) {
+                    doorn = parseInt(e.target.value);
+                  }
+                  let dt = this.state.dataContract;
+                  dt.doorNumber = doorn;
+                  this.setState({ dataContract: dt });
                 }}
+                //value={this.updateContract.doorNumber}
+                value={this.state.dataContract.doorNumber}
               />
             </Paper>
           </Grid>
