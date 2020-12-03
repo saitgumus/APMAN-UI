@@ -4,9 +4,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import InfoIcon from "@material-ui/icons/Info";
 import { bindActionCreators } from "redux";
-import * as messageActions from "../../redux/actions/message-actions";
 import * as pageActions from "../../redux/actions/page-actions";
-import {CommonTypes, getActionLabel} from "../../Types/Common";
+import { CommonTypes, getActionLabel } from "../../Types/Common";
 
 /**
  * action bar için aksiyon döndürür.
@@ -16,13 +15,13 @@ import {CommonTypes, getActionLabel} from "../../Types/Common";
 const Action = (props) => {
   let key = props.ActionKey;
 
-  console.log("key: ",key)
+  console.log("key: ", key);
   return (
-    <div style={{display:"inline-block", marginLeft:"15px"}}>
+    <div style={{ display: "inline-block", marginLeft: "15px" }}>
       {key ? (
         <Button
           variant="contained"
-          color={(key === CommonTypes.ActionKeys.Close)?"secondary":"primary"}
+          color={key === CommonTypes.ActionKeys.Close ? "secondary" : "primary"}
           size="small"
           startIcon={props.Icon ? props.Icon : <InfoIcon />}
           onClick={(e) => {
@@ -33,7 +32,7 @@ const Action = (props) => {
           {getActionLabel(key)}
         </Button>
       ) : (
-        <div/>
+        <div />
       )}
     </div>
   );
@@ -50,14 +49,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
   return {
     actions: {
-      /**
-       * showStatusMessage(message, type)
-       */
-      showMessage: bindActionCreators(
-        messageActions.showStatusMessage,
-        dispatch
-      ),
-
       executeCommand: bindActionCreators(pageActions.executeCommand, dispatch),
     },
   };

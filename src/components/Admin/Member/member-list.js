@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { CommonTypes } from "../../../Types/Common";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import * as messageActions from "../../../redux/actions/message-actions";
 import * as pageActions from "../../../redux/actions/page-actions";
 import {
   GetApartmentListByManagerUserName,
@@ -13,6 +12,11 @@ import Paper from "@material-ui/core/Paper";
 import { MemberUserContract } from "../../../Models/MemberUserContract";
 import ComboBox from "../../ToolBox/combo-box";
 import DataTable from "../../ToolBox/DataTable";
+import {
+  ShowStatusError,
+  ShowStatusInfo,
+  ShowStatusWarning,
+} from "../../../Core/Helper";
 
 const style = {
   root: {
@@ -99,29 +103,24 @@ class MemberList extends Component {
         GetMemberListByUserId(contract)
           .then((res) => {
             if (res.success) {
-              // if (res.value && res.value.length > 0)
-              //     this.props.actions.showMessage(res.value.length.toString() + " adet kayıt getirildi.", CommonTypes.MessageTypes.info)
-              // else
-              //     this.props.actions.showMessage("Hiç kayıt bulunamadı..", CommonTypes.MessageTypes.info);
-              //
+              if (res.value && res.value.length > 0)
+                ShowStatusInfo(
+                  res.value.length.toString() + " adet kayıt getirildi."
+                );
+              else ShowStatusInfo("Hiç kayıt bulunamadı..");
+
               this.setState({ memberList: res.value });
             }
           })
           .catch((err) => {
-            this.props.actions.showMessage(
-              "Üye listesi getirilemedi..",
-              CommonTypes.MessageTypes.error
-            );
+            ShowStatusError("Üye listesi getirilemedi..");
           });
         //#endregion
         break;
 
       case CommonTypes.ActionKeys.Edit:
         if (this.state.selectedMembers.length !== 1) {
-          this.props.actions.showMessage(
-            "güncelleme yapmak için 1 tane kayıt seçiniz.",
-            CommonTypes.MessageTypes.info
-          );
+          ShowStatusWarning("güncelleme yapmak için 1 tane kayıt seçiniz.");
           return;
         }
         let selectedContract = this.state.selectedMembers[0];
@@ -204,13 +203,6 @@ const mapStateToProps = (state) => ({});
 function mapDispatchToProps(dispatch) {
   return {
     actions: {
-      /**
-       * showStatusMessage(message, type)
-       */
-      showMessage: bindActionCreators(
-        messageActions.showStatusMessage,
-        dispatch
-      ),
       changeBackdropStatus: bindActionCreators(
         pageActions.changeBackDropStatus,
         dispatch

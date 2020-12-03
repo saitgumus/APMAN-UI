@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import * as messageActions from "../../redux/actions/message-actions";
 import * as apartmentActions from "../../redux/actions/apertment-actions";
 import ButtonWithIcon from "./icon-buttons";
 import { bindActionCreators } from "redux";
@@ -15,6 +14,7 @@ import {
 import { CommonTypes } from "../../Types/Common";
 import BlockContract from "../../Models/BlockContract";
 import CheckboxList from "./list";
+import { ShowStatusWarning } from "../../Core/Helper";
 
 class BlockDefinition extends Component {
   constructor(props) {
@@ -82,9 +82,8 @@ class BlockDefinition extends Component {
                 onClick={(e) => {
                   var lst = this.state.blockList;
                   if (lst.find((r) => r.Code === this.blockCode)) {
-                    this.props.actions.showMessage(
-                      this.blockCode + " isimli blok zaten ekli",
-                      CommonTypes.MessageTypes.error
+                    ShowStatusWarning(
+                      this.blockCode + " isimli blok zaten ekli"
                     );
                     return;
                   }
@@ -120,10 +119,6 @@ const mapStateToProps = (state) => ({});
 const mapDispatchToProps = (dispatch) => {
   return {
     actions: {
-      showMessage: bindActionCreators(
-        messageActions.showStatusMessage,
-        dispatch
-      ),
       addBlock: bindActionCreators(apartmentActions.saveBlock, dispatch),
     },
   };

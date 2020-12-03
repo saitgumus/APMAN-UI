@@ -28,7 +28,18 @@ export function changeActiveResourceCode(resourceCode) {
     case CommonTypes.Resources.memberList.resourceCode:
       actionKeys.push.apply(actionKeys,CommonTypes.Resources.memberList.actionKeys);
       break;
-      
+      // gelen kutusu
+    case CommonTypes.Resources.userInbox.resourceCode:
+      actionKeys.push.apply(actionKeys,CommonTypes.Resources.userInbox.actionKeys);
+      break;
+      // anket tanımlama
+    case CommonTypes.Resources.VoteDefine.resourceCode:
+      actionKeys.push.apply(actionKeys,CommonTypes.Resources.VoteDefine.actionKeys);
+      break;
+      // anket işlemler ve sonuçlar
+    case CommonTypes.Resources.VotingAndResult.resourceCode:
+      actionKeys.push.apply(actionKeys,CommonTypes.Resources.VotingAndResult.actionKeys);
+      break;
     default:
       break;
   }

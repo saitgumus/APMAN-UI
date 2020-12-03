@@ -8,4 +8,9 @@ export default class User {
   MemberId;
   token;
   expiration;
+  //bildirim
+  inboxNotificationCount;
+  generalNotificationCount;
+  //kaynak
+  resourceActionList;
 }

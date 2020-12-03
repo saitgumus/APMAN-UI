@@ -1,7 +1,11 @@
 import Messages from "./Messages";
+const dateFormat = require("dateformat");
 
+/**
+ * common types for general components
+ */
 export class CommonTypes {
-  static URLaddress = "https://localhost:23163";
+  static URLaddress = "https://apmanapi:23163";
   static KafkaHost = "localhost:9092";
   static KafkaTopic = "apmantest";
 
@@ -26,6 +30,17 @@ export class CommonTypes {
   };
 
   /**
+   * the icon keys
+   * @type {{viewlist: string, personadd: string, inbox: string, howtovote: string}}
+   */
+  static Iconkeys = {
+    inbox: "inbox",
+    personadd: "personadd",
+    viewlist: "viewlist",
+    howtovote: "howtovote",
+  };
+
+  /**
    * cache keyleri tutulur.
    */
   static CacheKeys = {
@@ -44,19 +59,25 @@ export class CommonTypes {
     /**
      * bilgi getir (listele)
      */
-    GetList:"GETLIST",
+    GetList: "GETLIST",
     /**
      * Temizle
      */
-    Clean:"CLEAN",
+    Clean: "CLEAN",
     /**
      * kapat
      */
-    Close:"CLOSE",
+    Close: "CLOSE",
     /**
      * düzenle / güncelle
      */
-    Edit:"EDIT"
+    Edit: "EDIT",
+    /**
+     * incele / ayrıntı
+     */
+    Examine: "EXAMINE",
+    /* Oku */
+    Read: "READ",
   };
 
   /**
@@ -68,7 +89,9 @@ export class CommonTypes {
     delete: "delete",
     info: "info",
     close: "close",
-    list:"list"
+    list: "list",
+    read: "read",
+    examine: "examine",
   };
 
   /**
@@ -95,17 +118,38 @@ export class CommonTypes {
     /**
      * üye listeleme
      */
-    memberList:{
-      resourceCode:"DEFLST",
-      actionKeys:[CommonTypes.ActionKeys.GetList,CommonTypes.ActionKeys.Edit]
+    memberList: {
+      resourceCode: "DEFLST",
+      actionKeys: [CommonTypes.ActionKeys.GetList, CommonTypes.ActionKeys.Edit],
     },
     /**
      * kullanıcı profili
      */
-    userProfile:{
-      resourceCode:"USRPRF",
-      actionKeys:[CommonTypes.ActionKeys.Close]
-    }
+    userProfile: {
+      resourceCode: "USRPRF",
+      actionKeys: [CommonTypes.ActionKeys.Close],
+    },
+    /**
+     * gelen kutusu
+     */
+    userInbox: {
+      resourceCode: "USRINB",
+      actionKeys: [CommonTypes.ActionKeys.GetList, CommonTypes.ActionKeys.Read],
+    },
+    /**
+     * Anket tanımlama
+     */
+    VoteDefine: {
+      resourceCode: "VTEDEF",
+      actionKeys: [CommonTypes.ActionKeys.Save, CommonTypes.ActionKeys.Clean],
+    },
+    /**
+     * oy kullanma ve sonuç görme
+     */
+    VotingAndResult: {
+      resourceCode: "VTNRES",
+      actionKeys: [CommonTypes.ActionKeys.GetList],
+    },
   };
 
   /**
@@ -155,7 +199,20 @@ export function getActionLabel(key) {
       return Messages.ActionNames.edit;
     case CommonTypes.ActionKeys.Close:
       return Messages.ActionNames.close;
+    case CommonTypes.ActionKeys.Examine:
+      return Messages.ActionNames.examine;
+    case CommonTypes.ActionKeys.Read:
+      return Messages.ActionNames.read;
+
     default:
       return "action";
   }
+}
+
+/**
+ * yyyy-mm-dd tarih verir.
+ * @returns {*}
+ */
+export function getDateIsoDate() {
+  return dateFormat(new Date(), "isoDate");
 }

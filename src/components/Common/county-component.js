@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import * as messageActions from "../../redux/actions/message-actions";
 import * as cityCountyActions from "../../redux/actions/city-county-actions";
 import Messages from "../../Types/Messages";
 
@@ -27,7 +26,7 @@ class CountyComponent extends Component {
       return (
         <React.Fragment>
           <Autocomplete
-              fullWidth={true}
+            fullWidth={true}
             id="combo-box-demo-county"
             options={[{ name: "test", id: 1 }]}
             getOptionLabel={(option) => option.name}
@@ -97,13 +96,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     actions: {
-      /**
-       * showStatusMessage(message, type)
-       */
-      showMessage: bindActionCreators(
-        messageActions.showStatusMessage,
-        dispatch
-      ),
       getCountyList: bindActionCreators(
         cityCountyActions.getCountyListAll,
         dispatch

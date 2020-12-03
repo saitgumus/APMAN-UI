@@ -20,4 +20,26 @@ export default class Cache {
       return 0;
     }
   }
+  
+  static setItem(key,value){
+    if (!Cache.lru.has(key)){
+      return Cache.lru.set(key, value);
+    }else {
+      return 0;
+    }
+  }
+
+  /**
+   * daha önce varsa üzerine yaz
+   * @param key
+   * @param value
+   * @returns {boolean}
+   */
+  static overrideItem(key,value){
+      return Cache.lru.set(key, value);
+  }
+  
+  static getItem(key){
+    return Cache.lru.get(key);
+  }
 }

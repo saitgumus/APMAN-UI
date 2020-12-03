@@ -36,9 +36,8 @@ class HttpClientService {
         if (resp.response !== undefined && resp.response.status === 401) {
           console.log("unauthorized!!");
           localStorage.removeItem("user");
-          // window.location.replace("http://localhost:3000");
+          window.location.replace("http://localhost:3000");
         }
-
         return Promise.reject(resp);
       });
   }

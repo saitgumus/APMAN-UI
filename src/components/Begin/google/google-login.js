@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {GoogleLogin} from "react-google-login";
-import {refreshTokenSetup} from "./refresh-token-setup";
+//import {refreshTokenSetup} from "./refresh-token-setup";
 
 const ClientId = "526937451548-d0q03t1ass9qgbipavmqms3ttrhpgma6.apps.googleusercontent.com";
 
@@ -16,7 +16,8 @@ class GoogleLoginComponent extends Component {
 
     onSuccess = (res) => {
         console.log("login successs - user : ", res.profileObj);
-        refreshTokenSetup(res);
+        //todo: storage implemantasyon tamamlanacak.
+       // refreshTokenSetup(res);
     }
 
     onFailure = (res) => {

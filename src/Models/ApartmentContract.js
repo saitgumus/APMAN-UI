@@ -11,4 +11,5 @@ export default class ApartmentContract {
   zipCode;
   apartmentManagerId;
   managerUserName;
+  apartmentType;
 }

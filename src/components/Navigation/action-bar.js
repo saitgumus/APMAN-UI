@@ -1,91 +1,84 @@
-import React, {Component} from "react";
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import * as messageActions from "../../redux/actions/message-actions";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import Action from "../ToolBox/action";
-import {CommonTypes} from "../../Types/Common";
+import { CommonTypes } from "../../Types/Common";
 
 import SaveIcon from "@material-ui/icons/Save";
-import ListIcon from '@material-ui/icons/List';
-import CreateIcon from '@material-ui/icons/Create'; //düzenle
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew'; //kapat
-import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import ListIcon from "@material-ui/icons/List";
+import CreateIcon from "@material-ui/icons/Create"; //düzenle
+import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew"; //kapat
+import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile"; // temizle
+import ImportContactsRoundedIcon from "@material-ui/icons/ImportContactsRounded"; // oku
+import FindInPageOutlinedIcon from "@material-ui/icons/FindInPageOutlined"; // incele
 
 class ActionBar extends Component {
-    getIcon = (key) => {
-        switch (key) {
-            case CommonTypes.ActionKeys.Save:
-                return <SaveIcon/>;
-            case CommonTypes.ActionKeys.GetList:
-                return <ListIcon/>
-            case CommonTypes.ActionKeys.Clean:
-                return <InsertDriveFileIcon/>
-            case CommonTypes.ActionKeys.Edit:
-                return <CreateIcon/>
-            case CommonTypes.ActionKeys.Close:
-                return <PowerSettingsNewIcon/>
-            default:
-                break;
-        }
-    };
+  getIcon = (key) => {
+    switch (key) {
+      case CommonTypes.ActionKeys.Save:
+        return <SaveIcon />;
+      case CommonTypes.ActionKeys.GetList:
+        return <ListIcon />;
+      case CommonTypes.ActionKeys.Clean:
+        return <InsertDriveFileIcon />;
+      case CommonTypes.ActionKeys.Edit:
+        return <CreateIcon />;
+      case CommonTypes.ActionKeys.Close:
+        return <PowerSettingsNewIcon />;
+      case CommonTypes.ActionKeys.Read:
+        return <ImportContactsRoundedIcon />;
+      case CommonTypes.ActionKeys.Examine:
+        return <FindInPageOutlinedIcon />;
 
-    static executeCommand(key) {
-        alert("no event. key:" + key);
-        return;
+      default:
+        break;
     }
+  };
 
-    generateActions = () => {
-        if (
-            this.props.actionListInfo &&
-            this.props.actionListInfo.actionKeyList &&
-            this.props.actionListInfo.actionKeyList.length > 0
-        ) {
-            let rtnObj = this.props.actionListInfo.actionKeyList.map(
-                (value, index) => {
-                    return (
-                        <Action
-                            key={index + "apbar"}
-                            ActionKey={value}
-                            Icon={this.getIcon(value)}
-                            ResourceCode={this.props.actionListInfo.resourceCode}
-                            executeCommand
-                            onExecuteCommand={ActionBar.executeCommand}
-                        />
-                    );
-                }
-            );
+  static executeCommand(key) {
+    alert("no event. key:" + key);
+    return;
+  }
 
-            return rtnObj;
+  generateActions = () => {
+    if (
+      this.props.actionListInfo &&
+      this.props.actionListInfo.actionKeyList &&
+      this.props.actionListInfo.actionKeyList.length > 0
+    ) {
+      let rtnObj = this.props.actionListInfo.actionKeyList.map(
+        (value, index) => {
+          return (
+            <Action
+              key={index + "apbar"}
+              ActionKey={value}
+              Icon={this.getIcon(value)}
+              ResourceCode={this.props.actionListInfo.resourceCode}
+              executeCommand
+              onExecuteCommand={ActionBar.executeCommand}
+            />
+          );
         }
-    };
+      );
 
-    render() {
-        return (
-           <div>
-               {this.generateActions()}
-           </div>
-        );
+      return rtnObj;
     }
+  };
+
+  render() {
+    return <div>{this.generateActions()}</div>;
+  }
 }
 
 function mapStateToProps(state) {
-    return {
-        actionListInfo: state.actionListReducer,
-    };
+  return {
+    actionListInfo: state.actionListReducer,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-    return {
-        actions: {
-            /**
-             * showStatusMessage(message, type)
-             */
-            showMessage: bindActionCreators(
-                messageActions.showStatusMessage,
-                dispatch
-            ),
-        },
-    };
+  return {
+    actions: {},
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActionBar);

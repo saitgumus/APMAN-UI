@@ -3,6 +3,9 @@
  */
 import {StringBuilder} from "./Helper";
 
+/**
+ * genel response yapısıdır.
+ */
 export class Response {
     constructor() {
         this.success = true;
@@ -16,7 +19,9 @@ export class Response {
      * @param severity {number}
      * @param errorCode {string}
      */
-    addResult = (message, severity, errorCode = "standart") => {
+    addResult = (message, severity, errorCode = "no code") => {
+        //todo severity bilgisine göre log işlenecek..
+        console.log("pushed error result:",message);
         if (message && message.length > 0) {
             this.results.push(new Result(errorCode, message, severity))
             if (this.results.length > 0) {
@@ -25,6 +30,19 @@ export class Response {
         }
     }
 
+    /**
+     * api tarafından gelen resultları alır.
+     * @param results
+     */
+    addCoreResults(results){
+        for (let result of results) {
+            this.addResult(result.errorMessage,result.severity,result.errorCode );
+        }
+    }
+    /**
+     * getting string formatted.
+     * @returns {string}
+     */
     getResultsStringFormat = () => {
         let string = new StringBuilder();
 
@@ -50,9 +68,16 @@ class Result {
 }
 
 /**
+ * the severity
  * hata seviyeleri
  */
 export const Severity = {
+    /**
+     * düşük derecede hata (kullanıcı hatası, geçersiz input değeri gibi..)
+     */
     Low: 1,
+    /**
+     * geliştiriciyi ilgilendiren hata türü...
+     */
     High: 2,
 };

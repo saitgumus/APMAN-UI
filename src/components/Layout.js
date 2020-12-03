@@ -5,27 +5,27 @@ import { connect } from "react-redux";
 import AppBarMenu from "./Navigation/app-bar";
 import { Card, Container } from "@material-ui/core";
 import ActionBar from "./Navigation/action-bar";
-import ShowMessage from "./ShowMessage";
 
 import BackdropComponent from "./ToolBox/backdrop";
 import { bindActionCreators } from "redux";
-//import * as messageActions from "../redux/actions/message-actions";
 import * as pageActions from "../redux/actions/page-actions";
-import User from "../Models/User";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
+import User from "../Models/User";
 
 function Layout(props) {
   let loginControl = () => {
-    //let usr = window.localStorage.getItem("user");
+    //  let usr = window.localStorage.getItem("user");
     window.localStorage.removeItem("user");
     let userc = new User();
-    userc.userId = 2;
+    userc.userId = 1007;
     userc.firstName = "api";
     userc.lastName = "api";
     userc.email = "api@gmail.com";
     userc.token = "asdasffasdf";
     userc.userName = "api";
+    userc.inboxNotificationCount = 0;
+
     window.localStorage.setItem("user", JSON.stringify(userc));
     console.log("user active :", userc);
 
@@ -57,7 +57,6 @@ function Layout(props) {
           </CardContent>
         </Card>
       </Container>
-      <ShowMessage />
     </AppBarMenu>
   );
 }

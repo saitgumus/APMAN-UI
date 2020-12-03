@@ -31,7 +31,11 @@ export default class Messages {
     /* güncelle */
     edit:"Güncelle",
     /* kapat */
-    close:"Kapat"
+    close:"Kapat",
+    /* İncele */
+    examine:"İncele",
+    /* Oku */
+    read:"Oku"
   };
 
   static LabelNames = {

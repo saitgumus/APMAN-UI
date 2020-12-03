@@ -7,7 +7,10 @@ import {Provider as AlertProvider} from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
 import {Provider} from "react-redux";
 import configureStore from "./redux/reducers/configure-store";
+import 'alertifyjs/build/css/alertify.css';
+import Alertify from "alertifyjs";
 
+Alertify.set('notifier','position','bottom-center');
 //import registerServiceWorker from "./registerServiceWorker";
 
 //const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
@@ -22,6 +25,7 @@ const options = {
 };
 
 const store = configureStore();
+
 
 ReactDOM.render(
     <BrowserRouter>

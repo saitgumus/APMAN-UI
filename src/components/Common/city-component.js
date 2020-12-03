@@ -2,10 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import * as messageActions from "../../redux/actions/message-actions";
 import * as cityCountyActions from "../../redux/actions/city-county-actions";
-// import { Label, Input } from "reactstrap";
-// import Messages from "../../Types/Messages";
 
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -34,7 +31,12 @@ class CityComponent extends Component {
           getOptionLabel={(option) => option.name}
           fullWidth={true}
           renderInput={(params) => (
-            <TextField {...params} label="İl" variant="outlined" fullWidth={true}/>
+            <TextField
+              {...params}
+              label="İl"
+              variant="outlined"
+              fullWidth={true}
+            />
           )}
           onChange={(e, value, reason) => {
             //value : cityContract
@@ -63,13 +65,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     actions: {
-      /**
-       * showStatusMessage(message, type)
-       */
-      showMessage: bindActionCreators(
-        messageActions.showStatusMessage,
-        dispatch
-      ),
       getCityList: bindActionCreators(cityCountyActions.getCityList, dispatch),
       changeSelectedCityId: bindActionCreators(
         cityCountyActions.changeSelectedCityId,

@@ -1,9 +1,9 @@
 //#region imports
-import React, {useState} from "react";
+import React, { useState } from "react";
 //import { Route } from "react-router";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import clsx from "clsx";
-import {fade, makeStyles, useTheme} from "@material-ui/core/styles";
+import { fade, makeStyles, useTheme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
@@ -27,396 +27,547 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import ViewListRoundedIcon from '@material-ui/icons/ViewListRounded';
-import PersonAddIcon from "@material-ui/icons/PersonAdd";
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as pageActions from "../../redux/actions/page-actions";
+import { GetActiveLocalUser } from "../../Core/Helper";
+import Cache from "../../Services/Cache";
+import GetIcon from "../Utils/iconHelper";
 
 //#endregion
 let drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        display: "flex",
+  root: {
+    display: "flex",
+  },
+  appBar: {
+    transition: theme.transitions.create(["margin", "width"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+    transition: theme.transitions.create(["margin", "width"], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  hide: {
+    display: "none",
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  drawerHeader: {
+    display: "flex",
+    alignItems: "center",
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: "flex-end",
+  },
+  grow: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "block",
     },
-    appBar: {
-        transition: theme.transitions.create(["margin", "width"], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: -drawerWidth,
+  },
+  contentShift: {
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0,
+  },
+  search: {
+    position: "relative",
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    "&:hover": {
+      backgroundColor: fade(theme.palette.common.white, 0.25),
     },
-    appBarShift: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
-        transition: theme.transitions.create(["margin", "width"], {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
+    marginRight: theme.spacing(2),
+    marginLeft: 0,
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(3),
+      width: "auto",
     },
-    hide: {
-        display: "none",
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inputRoot: {
+    color: "inherit",
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
     },
-    drawer: {
-        width: drawerWidth,
-        flexShrink: 0,
+  },
+  sectionDesktop: {
+    display: "none",
+    [theme.breakpoints.up("md")]: {
+      display: "flex",
     },
-    drawerPaper: {
-        width: drawerWidth,
+  },
+  sectionMobile: {
+    display: "flex",
+    [theme.breakpoints.up("md")]: {
+      display: "none",
     },
-    drawerHeader: {
-        display: "flex",
-        alignItems: "center",
-        padding: theme.spacing(0, 1),
-        // necessary for content to be below app bar
-        ...theme.mixins.toolbar,
-        justifyContent: "flex-end",
-    },
-    grow: {
-        flexGrow: 1,
-    },
-    menuButton: {
-        marginRight: theme.spacing(2),
-    },
-    title: {
-        display: "none",
-        [theme.breakpoints.up("sm")]: {
-            display: "block",
-        },
-    },
-    content: {
-        flexGrow: 1,
-        padding: theme.spacing(3),
-        transition: theme.transitions.create("margin", {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-        marginLeft: -drawerWidth,
-    },
-    contentShift: {
-        transition: theme.transitions.create("margin", {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-        marginLeft: 0,
-    },
-    search: {
-        position: "relative",
-        borderRadius: theme.shape.borderRadius,
-        backgroundColor: fade(theme.palette.common.white, 0.15),
-        "&:hover": {
-            backgroundColor: fade(theme.palette.common.white, 0.25),
-        },
-        marginRight: theme.spacing(2),
-        marginLeft: 0,
-        width: "100%",
-        [theme.breakpoints.up("sm")]: {
-            marginLeft: theme.spacing(3),
-            width: "auto",
-        },
-    },
-    searchIcon: {
-        padding: theme.spacing(0, 2),
-        height: "100%",
-        position: "absolute",
-        pointerEvents: "none",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    inputRoot: {
-        color: "inherit",
-    },
-    inputInput: {
-        padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
-        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-        transition: theme.transitions.create("width"),
-        width: "100%",
-        [theme.breakpoints.up("md")]: {
-            width: "20ch",
-        },
-    },
-    sectionDesktop: {
-        display: "none",
-        [theme.breakpoints.up("md")]: {
-            display: "flex",
-        },
-    },
-    sectionMobile: {
-        display: "flex",
-        [theme.breakpoints.up("md")]: {
-            display: "none",
-        },
-    },
+  },
 }));
 
-export default function AppBarMenu(props) {
-    const classes = useStyles();
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+/**
+ * uygulama çerçevesini oluşturur.
+ * @param props
+ * @returns {*}
+ * @constructor
+ */
+function AppBarMenu(props) {
+  const classes = useStyles();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
-    //drawer
-    const theme = useTheme();
-    const [openMenu, setOpenMenu] = useState(false);
-    const handleDrawerOpen = () => {
-        setOpenMenu(true);
-    };
+  //initial user
 
-    const handleDrawerClose = () => {
-        setOpenMenu(false);
-    };
-    const isMenuOpen = Boolean(anchorEl);
-    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  let tmpusr = GetActiveLocalUser();
+  console.log("app-bar tmp user = ", tmpusr);
 
-    //#region handles
+  console.log("cache", Cache.getItem("resources"));
+  let cacheResources = Cache.getItem("resources");
 
-    const handleProfileMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+  //drawer
+  const theme = useTheme();
+  const [openMenu, setOpenMenu] = useState(false);
+  // eslint-disable-next-line
+  const [inboxNotifCount, setInboxNotifCount] = useState(0);
+  // eslint-disable-next-line
+  const [generalNotifCount, setGeneralNotifCount] = useState(0);
 
-    const handleMobileMenuClose = () => {
-        setMobileMoreAnchorEl(null);
-    };
+  const handleDrawerOpen = () => {
+    setOpenMenu(true);
+  };
 
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-        handleMobileMenuClose();
-    };
+  const handleDrawerClose = () => {
+    setOpenMenu(false);
+  };
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-    const handleMobileMenuOpen = (event) => {
-        setMobileMoreAnchorEl(event.currentTarget);
-    };
+  //#region handles
 
-    //#endregion
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-    //#region renders
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
 
-    const menuId = "primary-search-account-menu";
-    const renderMenu = (
-        <Menu
-            anchorEl={anchorEl}
-            anchorOrigin={{vertical: "top", horizontal: "right"}}
-            id={menuId}
-            keepMounted
-            transformOrigin={{vertical: "top", horizontal: "right"}}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+
+  const handleMobileMenuOpen = (event) => {
+    setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  //#endregion
+
+  //#region renders
+
+  const menuId = "primary-search-account-menu";
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem component={Link} to="/user/profile">
+        {" "}
+        Profil{" "}
+      </MenuItem>
+    </Menu>
+  );
+
+  const mobileMenuId = "primary-search-account-menu-mobile";
+  const renderMobileMenu = (
+    <Menu
+      anchorEl={mobileMoreAnchorEl}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      id={mobileMenuId}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isMobileMenuOpen}
+      onClose={handleMobileMenuClose}
+    >
+      <MenuItem component={Link} to="/user/inbox">
+        <IconButton aria-label="show 4 new mails" color="inherit">
+          <Badge badgeContent={4} color="secondary">
+            <MailIcon />
+          </Badge>
+        </IconButton>
+        <p>Messages</p>
+      </MenuItem>
+      <MenuItem>
+        <IconButton aria-label="show 11 new notifications" color="inherit">
+          <Badge badgeContent={11} color="secondary">
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
+        <p>Notifications</p>
+      </MenuItem>
+      <MenuItem onClick={handleProfileMenuOpen}>
+        <IconButton
+          aria-label="account of current user"
+          aria-controls="primary-search-account-menu"
+          aria-haspopup="true"
+          color="inherit"
         >
-            <MenuItem component={Link} to="/user/profile" >Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-        </Menu>
-    );
+          <AccountCircle />
+        </IconButton>
+        <p>Profile</p>
+      </MenuItem>
+    </Menu>
+  );
 
-    const mobileMenuId = "primary-search-account-menu-mobile";
-    const renderMobileMenu = (
-        <Menu
-            anchorEl={mobileMoreAnchorEl}
-            anchorOrigin={{vertical: "top", horizontal: "right"}}
-            id={mobileMenuId}
-            keepMounted
-            transformOrigin={{vertical: "top", horizontal: "right"}}
-            open={isMobileMenuOpen}
-            onClose={handleMobileMenuClose}
-        >
-            <MenuItem>
-                <IconButton aria-label="show 4 new mails" color="inherit">
-                    <Badge badgeContent={4} color="secondary">
-                        <MailIcon/>
-                    </Badge>
-                </IconButton>
-                <p>Messages</p>
-            </MenuItem>
-            <MenuItem>
-                <IconButton aria-label="show 11 new notifications" color="inherit">
-                    <Badge badgeContent={11} color="secondary">
-                        <NotificationsIcon/>
-                    </Badge>
-                </IconButton>
-                <p>Notifications</p>
-            </MenuItem>
-            <MenuItem onClick={handleProfileMenuOpen}>
-                <IconButton
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="inherit"
-                >
-                    <AccountCircle/>
-                </IconButton>
-                <p>Profile</p>
-            </MenuItem>
-        </Menu>
-    );
+  //#endregion
 
-    //#endregion
+  //bildirim kontrolü -- loop hatasından dolayı commentlendi geri açılacak (sınavlardan sonra :) )
+  // if(props.userContract && props.userContract.token && props.userContract.token.length>1){
+  //     if(props.userContract.inboxNotificationCount > 0)
+  //         setInboxNotifCount(props.userContract.inboxNotificationCount);
+  //     if(props.userContract.generalNotificationCount > 0)
+  //         setGeneralNotifCount(props.userContract.generalNotificationCount);
+  //
+  // }
 
-    return (
-        <div className={classes.root}>
-            <CssBaseline/>
-            <AppBar
-                position="fixed"
-                className={clsx(classes.appBar, {
-                    [classes.appBarShift]: openMenu,
-                })}
+  return (
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: openMenu,
+        })}
+      >
+        <Toolbar>
+          <IconButton
+            edge="start"
+            className={clsx(classes.menuButton, openMenu && classes.hide)}
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography className={classes.title} variant="h6" noWrap>
+            APMAN
+          </Typography>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              placeholder="Search…"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ "aria-label": "search" }}
+            />
+          </div>
+          <div className={classes.grow} />
+          <div className={classes.sectionDesktop}>
+            <IconButton
+              aria-label="show 4 new mails"
+              color="inherit"
+              component={Link}
+              to="/user/inbox"
             >
-                <Toolbar>
-                    <IconButton
-                        edge="start"
-                        className={clsx(classes.menuButton, openMenu && classes.hide)}
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                    >
-                        <MenuIcon/>
-                    </IconButton>
-                    <Typography className={classes.title} variant="h6" noWrap>
-                        APMAN
-                    </Typography>
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon/>
-                        </div>
-                        <InputBase
-                            placeholder="Search…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{"aria-label": "search"}}
-                        />
-                    </div>
-                    <div className={classes.grow}/>
-                    <div className={classes.sectionDesktop}>
-                        <IconButton aria-label="show 4 new mails" color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <MailIcon/>
-                            </Badge>
-                        </IconButton>
-                        <IconButton aria-label="show 17 new notifications" color="inherit">
-                            <Badge badgeContent={17} color="secondary">
-                                <NotificationsIcon/>
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                        >
-                            <AccountCircle/>
-                        </IconButton>
-                    </div>
-                    <div className={classes.sectionMobile}>
-                        <IconButton
-                            aria-label="show more"
-                            aria-controls={mobileMenuId}
-                            aria-haspopup="true"
-                            onClick={handleMobileMenuOpen}
-                            color="inherit"
-                        >
-                            <MoreIcon/>
-                        </IconButton>
-                    </div>
-                </Toolbar>
-            </AppBar>
-            {renderMobileMenu}
-            {renderMenu}
-
-            <Drawer
-                className={classes.drawer}
-                variant="persistent"
-                anchor="left"
-                open={openMenu}
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
+              <Badge
+                showZero={false}
+                badgeContent={inboxNotifCount}
+                color="secondary"
+              >
+                <MailIcon />
+              </Badge>
+            </IconButton>
+            <IconButton aria-label="show 17 new notifications" color="inherit">
+              <Badge
+                showZero={false}
+                badgeContent={generalNotifCount}
+                color="secondary"
+              >
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              color="inherit"
             >
-                <div className={classes.drawerHeader}>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === "ltr" ? (
-                            <ChevronLeftIcon/>
-                        ) : (
-                            <ChevronRightIcon/>
-                        )}
-                    </IconButton>
-                </div>
-                <Divider/>
-                <Accordion>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon/>}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                    >
-                        <Typography style={{fontSize: 15, fontWeight: "bold"}}>Yönetsel</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <List>
-                            <ListItem
-                                button
-                                key={"Site/Apartman Ekle"}
-                                component={Link}
-                                to="/admin/definesiteapartment"
-                            >
-                                <ListItemIcon>
-                                    <InboxIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary={"Site/Apartman Ekle"}/>
-                            </ListItem>
-
-                            <ListItem
-                                button
-                                key={"Uye Ekle"}
-                                component={Link}
-                                to="/admin/definemember"
-                            >
-                                <ListItemIcon>
-                                    <PersonAddIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary={"Üye Tanımlama"}/>
-                            </ListItem>
-
-                            <ListItem
-                                button
-                                key={"Uye Listele"}
-                                component={Link}
-                                to="/admin/memberlist"
-                            >
-                                <ListItemIcon>
-                                    <ViewListRoundedIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary={"Üye Listele"}/>
-                            </ListItem>
-
-                            <ListItem
-                                button
-                                key={"profile"}
-                                component={Link}
-                                to="/user/profile"
-                            >
-                                <ListItemIcon>
-                                    <ViewListRoundedIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary={"Profil"}/>
-                            </ListItem>
-
-                        </List>
-                    </AccordionDetails>
-                </Accordion>
-            </Drawer>
-
-            <main
-                className={clsx(classes.content, {
-                    [classes.contentShift]: openMenu,
-                })}
+              <AccountCircle />
+            </IconButton>
+          </div>
+          <div className={classes.sectionMobile}>
+            <IconButton
+              aria-label="show more"
+              aria-controls={mobileMenuId}
+              aria-haspopup="true"
+              onClick={handleMobileMenuOpen}
+              color="inherit"
             >
-                <div className={classes.drawerHeader}/>
-                {props.children}
-            </main>
+              <MoreIcon />
+            </IconButton>
+          </div>
+        </Toolbar>
+      </AppBar>
+      {renderMobileMenu}
+      {renderMenu}
+
+      <Drawer
+        className={classes.drawer}
+        variant="persistent"
+        anchor="left"
+        open={openMenu}
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        <div className={classes.drawerHeader}>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === "ltr" ? (
+              <ChevronLeftIcon />
+            ) : (
+              <ChevronRightIcon />
+            )}
+          </IconButton>
         </div>
-    );
+        <Divider />
+        {cacheResources && cacheResources.length > 0 ? (
+          cacheResources.map((val, ind) => {
+            return (
+              <Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography style={{ fontSize: 15, fontWeight: "bold" }}>
+                    {val.parentName}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <List>
+                    {val.resources.map((sval, sind) => {
+                      return (
+                        <ListItem
+                          button
+                          key={sval.resourceCode}
+                          component={Link}
+                          to={sval.path}
+                        >
+                          <ListItemIcon>{GetIcon(sval.iconKey)}</ListItemIcon>
+                          <ListItemText primary={sval.name} />
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                </AccordionDetails>
+              </Accordion>
+            );
+          })
+        ) : (
+          <p />
+        )}
+        {/*<Accordion>*/}
+        {/*    <AccordionSummary*/}
+        {/*        expandIcon={<ExpandMoreIcon/>}*/}
+        {/*        aria-controls="panel1a-content"*/}
+        {/*        id="panel1a-header"*/}
+        {/*    >*/}
+        {/*        <Typography style={{fontSize: 15, fontWeight: "bold"}}>Yönetsel</Typography>*/}
+        {/*    </AccordionSummary>*/}
+        {/*    <AccordionDetails>*/}
+        {/*        <List>*/}
+        {/*            <ListItem*/}
+        {/*                button*/}
+        {/*                key={"Site/Apartman Ekle"}*/}
+        {/*                component={Link}*/}
+        {/*                to="/admin/definesiteapartment"*/}
+        {/*            >*/}
+        {/*                <ListItemIcon>*/}
+        {/*                    <InboxIcon/>*/}
+        {/*                </ListItemIcon>*/}
+        {/*                <ListItemText primary={"Site/Apartman Ekle"}/>*/}
+        {/*            </ListItem>*/}
+
+        {/*            <ListItem*/}
+        {/*                button*/}
+        {/*                key={"Uye Ekle"}*/}
+        {/*                component={Link}*/}
+        {/*                to="/admin/definemember"*/}
+        {/*            >*/}
+        {/*                <ListItemIcon>*/}
+        {/*                    <PersonAddIcon/>*/}
+        {/*                </ListItemIcon>*/}
+        {/*                <ListItemText primary={"Üye Tanımlama"}/>*/}
+        {/*            </ListItem>*/}
+
+        {/*            <ListItem*/}
+        {/*                button*/}
+        {/*                key={"Uye Listele"}*/}
+        {/*                component={Link}*/}
+        {/*                to="/admin/memberlist"*/}
+        {/*            >*/}
+        {/*                <ListItemIcon>*/}
+        {/*                    <ViewListRoundedIcon/>*/}
+        {/*                </ListItemIcon>*/}
+        {/*                <ListItemText primary={"Üye Listele"}/>*/}
+        {/*            </ListItem>*/}
+
+        {/*            <ListItem*/}
+        {/*                button*/}
+        {/*                key={"votedefining"}*/}
+        {/*                component={Link}*/}
+        {/*                to="/admin/votedefining"*/}
+        {/*            >*/}
+        {/*                <ListItemIcon>*/}
+        {/*                    <HowToVoteRoundedIcon/>*/}
+        {/*                </ListItemIcon>*/}
+        {/*                <ListItemText primary={"Anket Tanımla"}/>*/}
+        {/*            </ListItem>*/}
+
+        {/*        </List>*/}
+        {/*    </AccordionDetails>*/}
+        {/*</Accordion>*/}
+
+        {/*<Accordion>*/}
+        {/*    <AccordionSummary*/}
+        {/*        expandIcon={<ExpandMoreIcon/>}*/}
+        {/*        aria-controls="panel1a-content"*/}
+        {/*        id="panel1a-header"*/}
+        {/*    >*/}
+        {/*        <Typography style={{fontSize: 15, fontWeight: "bold"}}>Ana Menu</Typography>*/}
+        {/*    </AccordionSummary>*/}
+        {/*    <AccordionDetails>*/}
+        {/*        <List>*/}
+        {/*            <ListItem*/}
+        {/*                button*/}
+        {/*                key={"profile"}*/}
+        {/*                component={Link}*/}
+        {/*                to="/user/profile"*/}
+        {/*            >*/}
+        {/*                <ListItemIcon>*/}
+        {/*                    <ViewListRoundedIcon/>*/}
+        {/*                </ListItemIcon>*/}
+        {/*                <ListItemText primary={"Profil"}/>*/}
+        {/*            </ListItem>*/}
+
+        {/*            <ListItem*/}
+        {/*                button*/}
+        {/*                key={"user/userinbox"}*/}
+        {/*                component={Link}*/}
+        {/*                to="/user/inbox"*/}
+        {/*            >*/}
+        {/*                <ListItemIcon>*/}
+        {/*                    <InboxIcon/>*/}
+        {/*                </ListItemIcon>*/}
+        {/*                <ListItemText primary={"Gelen Kutusu"}/>*/}
+        {/*            </ListItem>*/}
+
+        {/*            <ListItem*/}
+        {/*                button*/}
+        {/*                key={"vote/votingandresult"}*/}
+        {/*                component={Link}*/}
+        {/*                to="/vote/votingandresult"*/}
+        {/*            >*/}
+        {/*                <ListItemIcon>*/}
+        {/*                    <InboxIcon/>*/}
+        {/*                </ListItemIcon>*/}
+        {/*                <ListItemText primary={"Anket İşlemleri"}/>*/}
+        {/*            </ListItem>*/}
+
+        {/*        </List>*/}
+        {/*    </AccordionDetails>*/}
+        {/*</Accordion>*/}
+      </Drawer>
+
+      <main
+        className={clsx(classes.content, {
+          [classes.contentShift]: openMenu,
+        })}
+      >
+        <div className={classes.drawerHeader} />
+        {props.children}
+      </main>
+    </div>
+  );
 }
+
+function mapStateToProps(state) {
+  return {
+    userContract: state.loginReducer,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      changeBackdropStatus: bindActionCreators(
+        pageActions.changeBackDropStatus,
+        dispatch
+      ),
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppBarMenu);

@@ -1,6 +1,6 @@
 import { CommonTypes } from "../Types/Common";
 import { HttpClientServiceInstance } from "./HttpClient";
-import Cache from "./Cache";
+//import Cache from "./Cache";
 import { Response, Severity } from "../Core/Response";
 import { MemberUserContract } from "../Models/MemberUserContract";
 
@@ -11,12 +11,14 @@ import { MemberUserContract } from "../Models/MemberUserContract";
 export async function GetApartmentListByManagerUserName(userName = "") {
   let user = JSON.parse(localStorage.getItem("user" || {}));
   let returnData = [];
-
-  let listfromcache = [];
-  if (Cache.lru.has("managerapartmentlist")) {
-    listfromcache = Cache.lru.get("managerapartmentlist");
-    returnData = listfromcache;
-  } else if (user.token && user.token.length > 1) {
+  //
+  // let listfromcache = [];
+  // if (Cache.lru.has("managerapartmentlist")) {
+  //   listfromcache = Cache.lru.get("managerapartmentlist");
+  //   console.log('cache list:', listfromcache)
+  //   returnData = listfromcache;
+  // } else
+  if (user.token && user.token.length > 1) {
     await HttpClientServiceInstance.post(
       CommonTypes.GetUrlForAPI("apartment", "getapartmentsbymanager"),
       user

@@ -11,9 +11,12 @@ import {
   UpdateMemberUser,
 } from "../../../Services/MemberDefineService";
 import ComboBox from "../../ToolBox/combo-box";
-import * as messageActions from "../../../redux/actions/message-actions";
 import { MemberUserContract } from "../../../Models/MemberUserContract";
-import { StringBuilder } from "../../../Core/Helper";
+import {
+  ShowStatusError,
+  ShowStatusSuccess,
+  StringBuilder,
+} from "../../../Core/Helper";
 import { Response, Severity } from "../../../Core/Response";
 
 const style = {
@@ -72,7 +75,6 @@ class MemberDefine extends Component {
     let isUpdate = false;
     let dtContract = {};
 
-    debugger;
     if (this.props.location.state && this.props.location.state.isUpdate) {
       dtContract = this.props.location.state.dataContract;
       isUpdate = true;
@@ -145,15 +147,9 @@ class MemberDefine extends Component {
             await UpdateMemberUser(this.state.dataContract)
               .then((res) => {
                 if (res.success) {
-                  this.props.actions.showMessage(
-                    "Kayıt güncellendi.",
-                    CommonTypes.MessageTypes.success
-                  );
+                  ShowStatusSuccess("Kayıt Güncellendi.");
                 } else {
-                  this.props.actions.showMessage(
-                    res.getResultsStringFormat(),
-                    CommonTypes.MessageTypes.error
-                  );
+                  ShowStatusError(res.getResultsStringFormat());
                 }
               })
               .catch((e) => console.log(e))
@@ -167,10 +163,7 @@ class MemberDefine extends Component {
             await SaveNewMember(this.state.dataContract)
               .then((res) => {
                 if (res.status === 201) {
-                  this.props.actions.showMessage(
-                    "yeni üye eklendi.",
-                    CommonTypes.MessageTypes.success
-                  );
+                  ShowStatusSuccess("Yeni üye kaydı yapıldı.");
                 }
               })
               .catch((e) => console.log(e))
@@ -180,11 +173,7 @@ class MemberDefine extends Component {
             //#endregion
           }
         } else {
-          let message = validateResponse.getResultsStringFormat();
-          this.props.actions.showMessage(
-            message,
-            CommonTypes.MessageTypes.error
-          );
+          ShowStatusError(validateResponse.getResultsStringFormat());
         }
         break;
 
@@ -372,13 +361,6 @@ const mapStateToProps = (state) => ({});
 function mapDispatchToProps(dispatch) {
   return {
     actions: {
-      /**
-       * showStatusMessage(message, type)
-       */
-      showMessage: bindActionCreators(
-        messageActions.showStatusMessage,
-        dispatch
-      ),
       changeBackdropStatus: bindActionCreators(
         pageActions.changeBackDropStatus,
         dispatch
