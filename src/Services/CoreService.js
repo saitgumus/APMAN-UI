@@ -1,7 +1,7 @@
 import { CommonTypes } from "../Types/Common";
 import Cache from "./Cache";
 import { HttpClientServiceInstance } from "./HttpClient";
-import {Response, Severity} from "../Core/Response";
+import { Response, Severity } from "../Core/Response";
 
 /**
  * the parameter services
@@ -12,10 +12,10 @@ export class ParameterService {
    * @param {String} paramType - parametre tipi
    */
   async GetParameter(paramType) {
-      let returnObject = new Response();
+    let returnObject = new Response();
 
-      if (!paramType || paramType.length < 1) {
-          returnObject.addResult('Parametre tipi alınamadı.',Severity.Low)
+    if (!paramType || paramType.length < 1) {
+      returnObject.addResult("Parametre tipi alınamadı.", Severity.Low);
       return returnObject;
     }
 
@@ -40,7 +40,7 @@ export class ParameterService {
       })
       .catch((e) => {
         console.log(e);
-        returnObject.addResult('parametre listesi getirilemedi.',Severity.Low)
+        returnObject.addResult("parametre listesi getirilemedi.", Severity.Low);
       });
 
     return returnObject;

@@ -17,28 +17,54 @@ export function changeActiveResourceCode(resourceCode) {
     case CommonTypes.Resources.defineSiteApartment.resourceCode:
       actionKeys.push.apply(actionKeys, [CommonTypes.ActionKeys.Save]);
       break;
-      //üye ekle
+    //üye ekle
     case CommonTypes.Resources.defineMember.resourceCode:
       actionKeys.push.apply(
         actionKeys,
         CommonTypes.Resources.defineMember.actionKeys
       );
       break;
-      //üye listele
+    //üye listele
     case CommonTypes.Resources.memberList.resourceCode:
-      actionKeys.push.apply(actionKeys,CommonTypes.Resources.memberList.actionKeys);
+      actionKeys.push.apply(
+        actionKeys,
+        CommonTypes.Resources.memberList.actionKeys
+      );
       break;
-      // gelen kutusu
+    // gelen kutusu
     case CommonTypes.Resources.userInbox.resourceCode:
-      actionKeys.push.apply(actionKeys,CommonTypes.Resources.userInbox.actionKeys);
+      actionKeys.push.apply(
+        actionKeys,
+        CommonTypes.Resources.userInbox.actionKeys
+      );
       break;
-      // anket tanımlama
+    // anket tanımlama
     case CommonTypes.Resources.VoteDefine.resourceCode:
-      actionKeys.push.apply(actionKeys,CommonTypes.Resources.VoteDefine.actionKeys);
+      actionKeys.push.apply(
+        actionKeys,
+        CommonTypes.Resources.VoteDefine.actionKeys
+      );
       break;
-      // anket işlemler ve sonuçlar
+    // anket işlemler ve sonuçlar
     case CommonTypes.Resources.VotingAndResult.resourceCode:
-      actionKeys.push.apply(actionKeys,CommonTypes.Resources.VotingAndResult.actionKeys);
+      actionKeys.push.apply(
+        actionKeys,
+        CommonTypes.Resources.VotingAndResult.actionKeys
+      );
+      break;
+    // masraf giriş
+    case CommonTypes.Resources.ExpenseEntry.resourceCode:
+      actionKeys.push.apply(
+        actionKeys,
+        CommonTypes.Resources.ExpenseEntry.actionKeys
+      );
+      break;
+    // masraf listele
+    case CommonTypes.Resources.ExpenseList.resourceCode:
+      actionKeys.push.apply(
+        actionKeys,
+        CommonTypes.Resources.ExpenseList.actionKeys
+      );
       break;
     default:
       break;
@@ -84,15 +110,15 @@ export function executeSuccess(onExecute) {
 //#region backdrop
 
 export function changeBackDropStatus(status) {
-return function (dispatch) {
-  return dispatch(changeBackDropSuccess(status));
-}
+  return function (dispatch) {
+    return dispatch(changeBackDropSuccess(status));
+  };
 }
 
-export function changeBackDropSuccess(status){
+export function changeBackDropSuccess(status) {
   return {
-    type:actionTypes.BACKDROP_STATUS,
-    payload:status
-  }
+    type: actionTypes.BACKDROP_STATUS,
+    payload: status,
+  };
 }
 //#endregion

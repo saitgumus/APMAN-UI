@@ -140,7 +140,6 @@ class MemberDefine extends Component {
         let validateResponse = this.isValidContract(this.state.dataContract);
         if (validateResponse.success) {
           this.props.actions.changeBackdropStatus(true);
-          debugger;
           if (this.state.isUpdate) {
             //#region güncelleme yapılır
 
@@ -234,17 +233,6 @@ class MemberDefine extends Component {
               <ComboBox
                 label={"Apartman"}
                 onSelectedItemChange={(item) => {
-                  // addressId: 8
-                  // addressText: null
-                  // apartmentId: 5
-                  // apartmentManagerId: 1
-                  // blockList: null
-                  // cityId: 0
-                  // countyId: 0
-                  // managerUserName: null
-                  // name: "postmanTest"
-                  // zipCode: null
-                  // __proto__: Object
                   console.log("selected apartmentId:", item.apartmentId);
                   let dt = this.state.dataContract;
                   dt.apartmentId = item.apartmentId;

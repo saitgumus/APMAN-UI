@@ -28,11 +28,14 @@ import {
   Typography,
   CardActions,
 } from "@material-ui/core";
-import { ShowStatusSuccess } from "../../Core/Helper";
+import {
+  GetIntValue,
+  ShowStatusError,
+  ShowStatusSuccess,
+} from "../../Core/Helper";
+import { ParameterService } from "../../Services/CoreService";
 
 class SignIn extends Component {
-  userContract = new User();
-
   constructor(props) {
     super(props);
     this.state = {
@@ -44,13 +47,47 @@ class SignIn extends Component {
       hasAlert: false,
       messageType: CommonTypes.MessageTypes.info,
       alertMessage: "",
-      selectedPackage: 0,
+      selectedPackage: {},
+      packageList: [],
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.getSubscriptionPackages();
+  }
 
   //#region metods
+
+  getSubscriptionPackages = async () => {
+    let param = new ParameterService();
+    param
+      .GetParameter("Subscription")
+      .then((response) => {
+        if (!response.success) {
+          ShowStatusError(response.getResultsStringFormat());
+          return;
+        }
+        if (response.valueList && response.valueList.length > 0) {
+          //paramValue=paket adı
+          //paramValue2=geçerliik sresi(ay)
+          //paramValue3=apartman limit
+          //paramValue4=üye limit
+          let packageList = [];
+          for (const item of response.valueList) {
+            var pac = {};
+            pac.packageName = item.paramValue;
+            pac.period = GetIntValue(item.paramValue2);
+            pac.apartmentLimit = GetIntValue(item.paramValue3);
+            pac.memberLimit = GetIntValue(item.paramValue4);
+            packageList.push(pac);
+          }
+          this.setState({ packageList: packageList });
+        }
+      })
+      .catch((err) => {
+        ShowStatusError(err.toOString());
+      });
+  };
 
   submitForm() {
     if (
@@ -109,38 +146,75 @@ class SignIn extends Component {
               aria-orientation={"horizontal"}
               spacing={3}
             >
-              <Grid item key={"sgngrid"}>
-                <Paper elevation={1}>
-                  <Card>
-                    <CardActionArea>
-                      <CardContent>
-                        <Typography gutterBottom variant="h5" component="h5">
-                          Paket 1
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          component="p"
-                        >
-                          Sınırsız içerik.
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
-                    <CardActions>
-                      <Button
-                        size="small"
-                        color="primary"
-                        onClick={(e) => {
-                          ShowStatusSuccess("Paket seçimi yapıldı.");
-                        }}
-                        disabled={false}
-                      >
-                        Paketi Al!
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Paper>
-              </Grid>
+              {this.state.packageList.length > 0 ? (
+                this.state.packageList.map((val, ind) => {
+                  return (
+                    <Grid item key={"sgngrid" + ind.toString()}>
+                      <Paper elevation={1}>
+                        <Card>
+                          <CardActionArea>
+                            <CardContent>
+                              <Typography
+                                gutterBottom
+                                variant="h5"
+                                component="h5"
+                              >
+                                {val.packageName}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="textSecondary"
+                                component="p"
+                              >
+                                {val.period} ay geçerli
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="textSecondary"
+                                component="p"
+                              >
+                                {val.apartmentLimit} adet apartman kaydı
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="textSecondary"
+                                component="p"
+                              >
+                                {val.memberLimit} adet üye kaydı
+                              </Typography>
+                            </CardContent>
+                          </CardActionArea>
+                          <CardActions>
+                            <Button
+                              size="small"
+                              color={
+                                this.state.selectedPackage.packageName ===
+                                val.packageName
+                                  ? "success"
+                                  : "primary"
+                              }
+                              onClick={(e) => {
+                                ShowStatusSuccess(
+                                  "Seçilen paket : " + val.packageName
+                                );
+                                this.setState({ selectedPackage: val });
+                              }}
+                              disabled={false}
+                            >
+                              {this.state.selectedPackage.packageName ===
+                              val.packageName
+                                ? "Paket Seçildi"
+                                : "Paketi Seç"}
+                            </Button>
+                          </CardActions>
+                        </Card>
+                      </Paper>
+                    </Grid>
+                  );
+                })
+              ) : (
+                <p />
+              )}
             </Grid>
           </Grid>
         </Grid>
@@ -225,6 +299,22 @@ class SignIn extends Component {
                 </FormGroup>
               </Col>
             </Row>
+            <Row>
+              <Col>
+                <FormGroup>
+                  <Label>{"Telefon Numarası"}</Label>
+                  <Input
+                    type="number"
+                    name="Phone"
+                    id="phone"
+                    onChange={(e) => {
+                      // eslint-disable-next-line
+                      this.state.dataContract.phoneNumber = e.target.value;
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
             <Button
               color={"primary"}
               onClick={(e) => {
@@ -232,7 +322,7 @@ class SignIn extends Component {
                 this.submitForm();
               }}
             >
-              {Messages.ActionNames.save}
+              {"Kayıt Ol"}
             </Button>
           </Form>
         </Container>

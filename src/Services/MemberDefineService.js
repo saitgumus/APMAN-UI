@@ -3,13 +3,14 @@ import { HttpClientServiceInstance } from "./HttpClient";
 //import Cache from "./Cache";
 import { Response, Severity } from "../Core/Response";
 import { MemberUserContract } from "../Models/MemberUserContract";
+import { GetActiveLocalUser } from "../Core/Helper";
 
 /*
  * kullanıcının yönetiminde olan apartman listesini döndürür
  * @param {string} userName
  * */
 export async function GetApartmentListByManagerUserName(userName = "") {
-  let user = JSON.parse(localStorage.getItem("user" || {}));
+  let user = GetActiveLocalUser();
   let returnData = [];
   //
   // let listfromcache = [];

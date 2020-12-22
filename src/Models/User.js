@@ -8,9 +8,23 @@ export default class User {
   MemberId;
   token;
   expiration;
+  //üyelik paketi
+  subscription;
   //bildirim
   inboxNotificationCount;
   generalNotificationCount;
   //kaynak
   resourceActionList;
+
+  //parola değişikliği gerekiyor!
+  shouldNewPassword;
+}
+
+export class Subscription {
+  subscriptionId;
+  userId;
+  startDate;
+  endDate;
+  memberLimit;
+  apartmentLimit;
 }

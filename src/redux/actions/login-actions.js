@@ -1,7 +1,7 @@
 import * as actionTypes from "./action-types";
 import User from "../../Models/User";
-import {LoginUser} from "../../Services/UserService";
-import {ShowStatusError} from "../../Core/Helper";
+import { LoginUser } from "../../Services/UserService";
+import { ShowStatusError } from "../../Core/Helper";
 
 //import Log from "../../Services/Log";
 
@@ -12,87 +12,82 @@ import {ShowStatusError} from "../../Core/Helper";
  * @constructor
  */
 export function LoginSuccess(userContract) {
-    return {
-        type: actionTypes.LOGIN,
-        payload: userContract,
-    };
+  return {
+    type: actionTypes.LOGIN,
+    payload: userContract,
+  };
 }
 
-export function ChangeLoginStatusSuccess(token, expiration, isSuccess) {
-    return {
-        type: actionTypes.CHANGE_LOGIN_STATUS,
-        payload: {
-            token,
-            expiration,
-            isSuccess,
-        },
-    };
+export function ChangeLoginStatusSuccess(
+  token,
+  expiration,
+  isSuccess,
+  isNewPassword = false
+) {
+  return {
+    type: actionTypes.CHANGE_LOGIN_STATUS,
+    payload: {
+      token,
+      expiration,
+      isSuccess,
+      isNewPassword,
+    },
+  };
 }
 
 export function ChangeLoginStatus(jwtObject) {
-    return function (dispatch) {
-        dispatch(
-            ChangeLoginStatusSuccess(
-                jwtObject.token,
-                jwtObject.expiration,
-                jwtObject.isSuccess
-            )
-        );
-    };
+  return function (dispatch) {
+    dispatch(
+      ChangeLoginStatusSuccess(
+        jwtObject.token,
+        jwtObject.expiration,
+        jwtObject.isSuccess,
+        jwtObject.isNewPassword
+      )
+    );
+  };
+}
+
+export function ChangeLoginToNewPasswordSuccess(email) {
+  return {
+    type: actionTypes.CHANGE_LOGIN_NEW_PASSWORD,
+    payload: {
+      email,
+    },
+  };
+}
+export function ChangeLoginToNewPassword(email) {
+  return function (dispatch) {
+    dispatch(ChangeLoginToNewPasswordSuccess(email));
+  };
 }
 
 export function Login(user) {
-    return  function (dispatch) {
-        return  LoginUser(user)
-            .then(
-                res => {
-                    if (res.success) {
-                        user = res.value;
-                        dispatch(LoginSuccess(user));
-                        //test
-                        dispatch(ChangeLoginStatusSuccess(user.token, user.expiration, true))
-                    } else {
-                        ShowStatusError(res.getResultsStringFormat());
-                        dispatch(ChangeLoginStatusSuccess("", new Date(), false))
-                        dispatch(LoginSuccess(new User()));
-                    }
-                }
-            ).catch(
-                (e) => {
-                    // debugger;
-                    // if (e.response.status === 401) {
-                    //     dispatch(ChangeLoginStatusSuccess("", new Date(), false))
-                    // }
-                    // dispatch(LoginSuccess(new User()));
-                    console.log(e);
-                }
-            )
-        // return HttpClientServiceInstance.post(url, user)
-        //     .then((res) => {
-        //         let data = res.data.user;
-        //
-        //         user = new User();
-        //         user.userId = data.userId;
-        //         user.email = data.email;
-        //         user.firstName = data.firstName;
-        //         user.lastName = data.lastName;
-        //         user.userName = data.userName;
-        //         user.token = res.data.token.token;
-        //         user.expiration = res.data.token.expiration;
-        //         user.inboxNotificationCount = data.inboxNotificationCount;
-        //         user.generalNotificationCount = 0;//doldurulacak
-        //
-        //         localStorage.setItem("user", JSON.stringify(user));
-        //         HttpClientServiceInstance.setTokenOnLogin(user.token);
-        //         dispatch(LoginSuccess(user));
-        //         //test
-        //         dispatch(ChangeLoginStatusSuccess(user.token, user.expiration, true))
-        //     })
-        //     .catch((e) => {
-        //         if (e.response.status === 401) {
-        //             dispatch(ChangeLoginStatusSuccess("", new Date(), false))
-        //         }
-        //         dispatch(LoginSuccess(new User()));
-        //     });
-    };
+  return function (dispatch) {
+    return LoginUser(user)
+      .then((res) => {
+        if (res.success) {
+          if (res.value.shouldNewPassword) {
+            //dispatch(ChangeLoginToNewPassword(user.email));
+            dispatch(
+              ChangeLoginStatusSuccess(user.token, user.expiration, false, true)
+            );
+          } else {
+            user = res.value;
+            dispatch(LoginSuccess(user));
+            //test
+            dispatch(
+              ChangeLoginStatusSuccess(user.token, user.expiration, true)
+            );
+          }
+        } else {
+          ShowStatusError(res.getResultsStringFormat());
+          dispatch(ChangeLoginStatusSuccess("", new Date(), false));
+          dispatch(LoginSuccess(new User()));
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 }

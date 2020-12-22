@@ -4,6 +4,7 @@ import Cache from "./Cache";
 import { Response, Severity } from "../Core/Response";
 import { InboxmessageContract } from "../Models/InboxMessageContract";
 import User from "../Models/User";
+import { GetActiveLocalUser } from "../Core/Helper";
 
 /**
  * login the user
@@ -16,32 +17,48 @@ export async function LoginUser(userContract) {
   let contract = userContract;
   let url = CommonTypes.GetUrlForAPI("user", "login");
 
+  Cache.setItem("lastloginrequestuser", contract);
+
   await HttpClientServiceInstance.post(url, contract)
     .then((res) => {
       if (res.data.success) {
-        let userData = res.data.value.userDefinitionContract;
+        //parola değişikliği gerekiyor mu?
+        if (
+          res.data.value.accessToken &&
+          res.data.value.accessToken.token &&
+          res.data.value.accessToken.token.length > 0 &&
+          res.data.value.shouldNewPassword
+        ) {
+          HttpClientServiceInstance.setTokenOnLogin(
+            res.data.value.accessToken.token
+          );
+          response.value = { shouldNewPassword: true };
+        } else {
+          let userData = res.data.value.userDefinitionContract;
 
-        let user = new User();
-        user.userId = userData.userId;
-        user.email = userData.email;
-        user.firstName = userData.firstName;
-        user.lastName = userData.lastName;
-        user.userName = userData.userName;
+          let user = new User();
+          user.userId = userData.userId;
+          user.email = userData.email;
+          user.firstName = userData.firstName;
+          user.lastName = userData.lastName;
+          user.userName = userData.userName;
 
-        user.token = res.data.value.accessToken.token;
-        user.expiration = res.data.value.accessToken.expiration;
+          user.token = res.data.value.accessToken.token;
+          user.expiration = res.data.value.accessToken.expiration;
+          HttpClientServiceInstance.setTokenOnLogin(user.token);
 
-        user.inboxNotificationCount = userData.inboxNotificationCount;
-        user.generalNotificationCount = 0; //doldurulacak - sunucu tarafı null
+          user.inboxNotificationCount = userData.inboxNotificationCount;
+          user.generalNotificationCount = 0; //doldurulacak - sunucu tarafı null
 
-        //resources
-        user.resourceActionList = res.data.value.resourceActions;
+          //resources
+          user.resourceActionList = res.data.value.resourceActions;
 
-        localStorage.setItem("user", JSON.stringify(user));
-        HttpClientServiceInstance.setTokenOnLogin(user.token);
+          localStorage.setItem("user", JSON.stringify(user));
+          HttpClientServiceInstance.setTokenOnLogin(user.token);
 
-        response.value = user;
-        SetUserResources(user.resourceActionList);
+          response.value = user;
+          SetUserResources(user.resourceActionList);
+        }
       } else {
         response.addCoreResults(res.data.results);
       }
@@ -52,6 +69,57 @@ export async function LoginUser(userContract) {
   return response;
 }
 
+/**
+ * parolayı yenilemek için doğrulama kodu istenir.
+ * @param {userContract} userContract
+ */
+export async function ForgotPassword(userContract) {
+  let ro = new Response();
+  let contract = userContract;
+  let url = CommonTypes.GetUrlForAPI("user", "forgotpassword");
+
+  await HttpClientServiceInstance.post(url, contract)
+    .then((res) => {
+      if (res.data && res.data.success) {
+        ro.value = res.data.value;
+      } else {
+        ro.addCoreResults(res.data.results);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  return ro;
+}
+
+/**
+ * yeni şifre belirler
+ * @param {string} password
+ */
+export async function SetNewPassword(password, email) {
+  let ro = new Response();
+  let contract = new User();
+  contract.email = email;
+  contract.password = password;
+
+  let url = CommonTypes.GetUrlForAPI("user", "newpassword");
+
+  await HttpClientServiceInstance.post(url, contract)
+    .then((res) => {
+      if (res.data && res.data.success) {
+        ro.value = res.data.value;
+        return ro;
+      } else {
+        ro.addCoreResults(res.data.results);
+        return ro;
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      ro.addResult("Parola değişikliği yapılamadı.");
+      return ro;
+    });
+}
 /**
  * gelen kutusu bilgilerini getirir.
  * @param inboxmessageContract
@@ -119,6 +187,10 @@ export async function updateMessageStatusForReaded(inboxId) {
   return response;
 }
 
+/**
+ * kaynak-aksiyon normalizasyonu yapılır.
+ * @param {array} resourceActions
+ */
 function SetUserResources(resourceActions) {
   if (resourceActions && resourceActions.length > 0) {
     // var s = {

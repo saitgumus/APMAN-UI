@@ -5,7 +5,7 @@ const dateFormat = require("dateformat");
  * common types for general components
  */
 export class CommonTypes {
-  static URLaddress = "https://apmanapi:23163";
+  static URLaddress = "https://localhost:5001"; //23163 - api, 5001 - gateway
   static KafkaHost = "localhost:9092";
   static KafkaTopic = "apmantest";
 
@@ -17,6 +17,14 @@ export class CommonTypes {
   static GetUrlForAPI(controllerName, actionName) {
     return this.URLaddress.concat(
       "/api/",
+      controllerName.trim(),
+      "/",
+      actionName.trim()
+    );
+  }
+  static GetUrlForAccount(controllerName, actionName) {
+    return this.URLaddress.concat(
+      "/accounting/",
       controllerName.trim(),
       "/",
       actionName.trim()
@@ -58,6 +66,7 @@ export class CommonTypes {
     Save: "SAVE",
     /**
      * bilgi getir (listele)
+     * GETLIST
      */
     GetList: "GETLIST",
     /**
@@ -148,6 +157,20 @@ export class CommonTypes {
      */
     VotingAndResult: {
       resourceCode: "VTNRES",
+      actionKeys: [CommonTypes.ActionKeys.GetList],
+    },
+    /**
+     * masraf giriş
+     */
+    ExpenseEntry: {
+      resourceCode: "EXPENT",
+      actionKeys: [CommonTypes.ActionKeys.Save],
+    },
+    /**
+     * masraf giriş
+     */
+    ExpenseList: {
+      resourceCode: "EXPLST",
       actionKeys: [CommonTypes.ActionKeys.GetList],
     },
   };

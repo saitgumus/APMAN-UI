@@ -395,7 +395,7 @@ function AppBarMenu(props) {
         {cacheResources && cacheResources.length > 0 ? (
           cacheResources.map((val, ind) => {
             return (
-              <Accordion>
+              <Accordion key={"accordion" + ind}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel1a-content"

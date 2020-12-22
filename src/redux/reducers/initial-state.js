@@ -3,28 +3,28 @@ import Parameter from "../../Models/Parameter";
 export default {
   registerUser: {
     name: "redux-test-user-name",
-    isRegistered:false
+    isRegistered: false,
   },
-  loginUser:{
-    userId:-1,
-    userName:"",
-    firstName:"",
-    lastName:"",
-    email:"",
-    token:"",
-    expiration:new Date()
+  loginUser: {
+    userId: -1,
+    userName: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    token: "",
+    expiration: new Date(),
   },
   cityList: [
     {
       name: "Seçiniz",
-      cityId:-1
+      cityId: -1,
     },
   ],
   selectedCityId: -1,
   countyList: [
     {
       name: "Seçiniz",
-      countyId:-1
+      countyId: -1,
     },
   ],
   parameterList: [initialParameter()],
@@ -32,6 +32,7 @@ export default {
     token: "",
     expiration: new Date(),
     isSuccess: false,
+    isNewPassword: false,
   },
   messageObject: {
     messageType: "",
@@ -58,7 +59,7 @@ export default {
       alert("executed redux function");
     },
   },
-  backDropStatus:false,
+  backDropStatus: false,
 };
 
 function initialParameter() {

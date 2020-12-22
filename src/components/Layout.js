@@ -12,28 +12,39 @@ import * as pageActions from "../redux/actions/page-actions";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import User from "../Models/User";
+import PasswordChange from "./Begin/password-change";
 
 function Layout(props) {
   let loginControl = () => {
     //  let usr = window.localStorage.getItem("user");
-    window.localStorage.removeItem("user");
-    let userc = new User();
-    userc.userId = 1007;
-    userc.firstName = "api";
-    userc.lastName = "api";
-    userc.email = "api@gmail.com";
-    userc.token = "asdasffasdf";
-    userc.userName = "api";
-    userc.inboxNotificationCount = 0;
+    // window.localStorage.removeItem("user");
+    // let userc = new User();
+    // userc.userId = 1007;
+    // userc.firstName = "api";
+    // userc.lastName = "api";
+    // userc.email = "api@gmail.com";
+    // userc.token = "asdasffasdf";
+    // userc.userName = "api";
+    // userc.inboxNotificationCount = 0;
 
-    window.localStorage.setItem("user", JSON.stringify(userc));
-    console.log("user active :", userc);
+    // window.localStorage.setItem("user", JSON.stringify(userc));
+    // console.log("user active :", userc);
 
-    return props.children;
+    //return props.children;
     //todo: test e çıkmadan önce log-in geri aktifleştirilecek.
     // eslint-disable-next-line no-unreachable
-    if (props.loginJwtObject && props.loginJwtObject.isSuccess) {
+    if (
+      props.loginJwtObject &&
+      props.loginJwtObject.isSuccess &&
+      props.loginJwtObject.isNewPassword === false
+    ) {
       return props.children;
+    } else if (
+      props.loginJwtObject &&
+      !props.loginJwtObject.isSuccess &&
+      props.loginJwtObject.isNewPassword
+    ) {
+      return <PasswordChange />;
     } else {
       return (
         <div>
@@ -46,8 +57,8 @@ function Layout(props) {
 
   return (
     <AppBarMenu>
-      <BackdropComponent />
       <Container maxWidth="xl">
+        <BackdropComponent />
         <Card>
           <CardActions>
             <ActionBar />

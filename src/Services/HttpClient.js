@@ -3,6 +3,7 @@ import axios from "axios";
 class HttpClientService {
   constructor() {
     localStorage.removeItem("user");
+
     const token = JSON.parse(localStorage.getItem("user") || "{}")["token"];
     this.axiosInstance = axios.create({
       baseURL: "/",

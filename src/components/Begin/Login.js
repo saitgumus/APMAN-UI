@@ -16,7 +16,13 @@ import { bindActionCreators } from "redux";
 import * as cityActions from "../../redux/actions/city-county-actions";
 import * as loginActions from "../../redux/actions/login-actions";
 import GoogleLoginComponent from "./google/google-login";
-import { ShowStatusError, ShowStatusSuccess } from "../../Core/Helper";
+import {
+  IsNullOrEmpty,
+  ShowStatusError,
+  ShowStatusSuccess,
+} from "../../Core/Helper";
+import { Checkbox, FormControlLabel } from "@material-ui/core";
+import { ForgotPassword } from "../../Services/UserService";
 
 /*
  * Login component (giriş yap)
@@ -34,18 +40,26 @@ class Login extends Component {
       validate: {
         emailState: "",
       },
+      isForgotPassword: false,
     };
   }
 
   componentDidMount() {
-    this.props.actions.changeLoginStatus({
-      token: "",
-      expiration: new Date(),
-      isSuccess: false,
+    // this.props.actions.changeLoginStatus({
+    //   token: "",
+    //   expiration: new Date(),
+    //   isSuccess: false,
+    // });
+    //dev ortamı için otomatik login
+    this.props.actions.loginUser({
+      firstName: "Fatih",
+      lastName: "Gümüs",
+      userName: "",
+      email: "fatihgumus33@gmail.com",
+      password: "password",
+      memberId: 0,
     });
   }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {}
 
   validateEmail(e) {
     const emailRex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -58,22 +72,50 @@ class Login extends Component {
     this.setState({ validate });
   }
 
-  isLogin = () => {
-    let user = this.props.userContract;
-    if (user.token && user.token.length > 1) {
-      let lclUser = window.localStorage.getItem("user");
-      if (lclUser || lclUser.token) {
-        this.props.actions.changeLoginStatus({
-          token: user.token,
-          expiration: user.expiration,
-          isSuccess: true,
-        });
+  // isLogin = () => {
+  //   let user = this.props.userContract;
+  //   if (user.token && user.token.length > 1) {
+  //     let lclUser = window.localStorage.getItem("user");
+  //     if (lclUser || lclUser.token) {
+  //       this.props.actions.changeLoginStatus({
+  //         token: user.token,
+  //         expiration: user.expiration,
+  //         isSuccess: true,
+  //       });
 
-        ShowStatusSuccess("Giriş yapıldı..");
-      }
-    } else {
-      ShowStatusError("hatalı kullanıcı adı veya parola girdiniz.");
+  //       ShowStatusSuccess("Giriş yapıldı..");
+  //     }
+  //   } else {
+  //     ShowStatusError("hatalı kullanıcı adı veya parola girdiniz.");
+  //   }
+  // };
+
+  onForgotPassword = async () => {
+    let user = this.state.dataContract;
+    if (IsNullOrEmpty(user.Email)) {
+      ShowStatusError("mail adresinizi giriniz.");
+      return;
     }
+
+    await ForgotPassword(user)
+      .then((res) => {
+        if (res.success) {
+          ShowStatusSuccess(
+            "Parola değiştirebilmeniz için doğrulama kodu mail adresinize gönderilmiştir."
+          );
+          this.setState({
+            ...this.state,
+            dataContract: {},
+            isForgotPassword: false,
+            validate: { emailState: "" },
+          });
+        } else {
+          ShowStatusError(res.getResultsStringFormat);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   render() {
@@ -94,6 +136,9 @@ class Login extends Component {
                   placeholder=""
                   onChange={(e) => {
                     this.loginUserContract.email = e.target.value;
+                    var datac = this.state.dataContract;
+                    datac.Email = e.target.value;
+                    this.setState({ dataContract: datac });
                   }}
                   onBlur={(e) => this.validateEmail(e)}
                 />
@@ -112,21 +157,49 @@ class Login extends Component {
                   type="password"
                   name="password"
                   id="userLoginPassword"
-                  placeholder=""
                   autoComplete="current-password"
                   onChange={(e) => {
                     this.loginUserContract.password = e.target.value;
                   }}
+                  disabled={this.state.isForgotPassword}
+                />
+              </FormGroup>
+            </Col>
+            <Col>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={(e) => {
+                        this.setState({ isForgotPassword: e.target.checked });
+                      }}
+                      checked={this.state.isForgotPassword}
+                      name="forgot"
+                    />
+                  }
+                  label="Parolamı Unuttum"
                 />
               </FormGroup>
             </Col>
             <Button
               color={"primary"}
               onClick={(e) => {
-                this.props.actions.loginUser(this.loginUserContract);
+                if (this.state.isForgotPassword) this.onForgotPassword();
+                else {
+                  if (
+                    IsNullOrEmpty(this.loginUserContract.email) ||
+                    IsNullOrEmpty(this.loginUserContract.password)
+                  ) {
+                    ShowStatusError("Email ve parola alanlarını doldurunuz.");
+                    return;
+                  }
+                  this.props.actions.loginUser(this.loginUserContract);
+                }
               }}
             >
-              {Messages.ActionNames.enter}
+              {this.state.isForgotPassword
+                ? "Doğrulama Kodu Al"
+                : Messages.ActionNames.enter}
             </Button>
           </Form>
           <hr />
