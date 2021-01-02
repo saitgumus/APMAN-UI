@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router";
 import Layout from "./components/Layout";
-import { Home } from "./components/Home";
+import Home from "./components/Home";
 import DefineSiteApartment from "./components/Admin/SiteApartment/DefineSiteApartment";
 import MemberDefine from "./components/Admin/Member/member-define";
 import MemberList from "./components/Admin/Member/member-list";

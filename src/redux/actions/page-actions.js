@@ -13,6 +13,10 @@ export function changeActiveResourceCode(resourceCode) {
   let actionKeys = [];
   // LogMessage("test message");
   switch (resourceCode) {
+    // masraf listele
+    case CommonTypes.Resources.home.resourceCode:
+      actionKeys.push.apply(actionKeys, CommonTypes.Resources.home.actionKeys);
+      break;
     //apartman tanımlama
     case CommonTypes.Resources.defineSiteApartment.resourceCode:
       actionKeys.push.apply(actionKeys, [CommonTypes.ActionKeys.Save]);

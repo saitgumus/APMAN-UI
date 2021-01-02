@@ -11,7 +11,6 @@ import { bindActionCreators } from "redux";
 import * as pageActions from "../redux/actions/page-actions";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
-import User from "../Models/User";
 import PasswordChange from "./Begin/password-change";
 
 function Layout(props) {

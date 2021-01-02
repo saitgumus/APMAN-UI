@@ -107,6 +107,10 @@ export class CommonTypes {
    * kaynak tanımları
    */
   static Resources = {
+    home: {
+      resourceCode: "HOME",
+      actionKeys: [],
+    },
     /**
      * site apartman ekle
      */
@@ -171,7 +175,10 @@ export class CommonTypes {
      */
     ExpenseList: {
       resourceCode: "EXPLST",
-      actionKeys: [CommonTypes.ActionKeys.GetList],
+      actionKeys: [
+        CommonTypes.ActionKeys.GetList,
+        CommonTypes.ActionKeys.Examine,
+      ],
     },
   };
 

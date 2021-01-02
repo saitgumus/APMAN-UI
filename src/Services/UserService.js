@@ -4,7 +4,6 @@ import Cache from "./Cache";
 import { Response, Severity } from "../Core/Response";
 import { InboxmessageContract } from "../Models/InboxMessageContract";
 import User from "../Models/User";
-import { GetActiveLocalUser } from "../Core/Helper";
 
 /**
  * login the user

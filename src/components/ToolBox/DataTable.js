@@ -10,6 +10,8 @@ class DataTable extends Component {
   options = {
     filterType: "checkbox",
     onRowSelectionChange: this.props.onSelectedItemChange,
+    selectableRows: "single",
+    selectableRowsOnClick: true,
     // onRowClick: (rowData, rowMeta) => {
     //   debugger;
     //   //todo : seçili satırla güncelleme yapılabilecek.

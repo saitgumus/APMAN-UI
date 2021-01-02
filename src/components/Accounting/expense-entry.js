@@ -134,6 +134,9 @@ class ExpenseEntry extends Component {
           .then((res) => {
             if (res.success) {
               ShowStatusSuccess("Masraf girişi yapıldı.");
+              this.props.history.push({
+                pathname: "/",
+              });
             } else {
               ShowStatusError(res.getResultsStringFormat());
             }
@@ -158,7 +161,7 @@ class ExpenseEntry extends Component {
   render() {
     return (
       <Grid container spacing={3}>
-        <Grid item>
+        <Grid item xs={6}>
           <ApartmentComponent onChange={this.onChangeApartment} />
         </Grid>
         <Grid item xs={12}>

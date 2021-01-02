@@ -34,12 +34,10 @@ export default class ApartmentComponent extends Component {
         id="combo-box-demo-prm"
         options={this.state.apartmentList}
         getOptionLabel={(option) => option.name}
-        style={{ width: 300 }}
         renderInput={(params) => (
           <TextField
             {...params}
             label={this.props.label ? this.props.label : "Apartman"}
-            variant="outlined"
           />
         )}
         onChange={(e, value, reason) => {
