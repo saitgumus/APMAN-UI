@@ -30,6 +30,14 @@ export class CommonTypes {
       actionName.trim()
     );
   }
+  static GetUrlForPurchasing(controllerName, actionName) {
+    return this.URLaddress.concat(
+      "/purchasing/",
+      controllerName.trim(),
+      "/",
+      actionName.trim()
+    );
+  }
 
   static MessageTypes = {
     success: "success",
@@ -87,6 +95,8 @@ export class CommonTypes {
     Examine: "EXAMINE",
     /* Oku */
     Read: "READ",
+    /* sözleşme ekle */
+    AddAgreement: "ADDAGR",
   };
 
   /**
@@ -180,6 +190,27 @@ export class CommonTypes {
         CommonTypes.ActionKeys.Examine,
       ],
     },
+    /**
+     * ihale tanımlama
+     *
+     */
+    TenderDefining: {
+      resourceCode: "TNRDEF",
+      actionKeys: [
+        CommonTypes.ActionKeys.Save,
+        CommonTypes.ActionKeys.AddAgreement,
+      ],
+    },
+    /**
+     * ihale listeleme
+     */
+    TenderListing: {
+      resourceCode: "TNRLST",
+      actionKeys: [
+        CommonTypes.ActionKeys.GetList,
+        CommonTypes.ActionKeys.Examine,
+      ],
+    },
   };
 
   /**
@@ -233,6 +264,8 @@ export function getActionLabel(key) {
       return Messages.ActionNames.examine;
     case CommonTypes.ActionKeys.Read:
       return Messages.ActionNames.read;
+    case CommonTypes.ActionKeys.AddAgreement:
+      return "Sözleşme Ekle";
 
     default:
       return "action";

@@ -11,6 +11,8 @@ import VoteDefining from "./components/Vote/VoteDefining";
 import VotingAndResult from "./components/Vote/VotingAndResult";
 import ExpenseEntry from "./components/Accounting/expense-entry";
 import ExpenseList from "./components/Accounting/expense-list";
+import TenderDefining from "./components/Tender/tender-defining-component";
+import TenderList from "./components/Tender/tender-list-component";
 
 export default class App extends Component {
   static displayName = App.name;
@@ -32,6 +34,8 @@ export default class App extends Component {
           <Route path="/vote/votingandresult" component={VotingAndResult} />
           <Route path="/accounting/expense-entry" component={ExpenseEntry} />
           <Route path="/accounting/expense-list" component={ExpenseList} />
+          <Route path="/tender/tenderdefining" component={TenderDefining} />
+          <Route path="/tender/tenderlist" component={TenderList} />
         </Switch>
       </Layout>
     );

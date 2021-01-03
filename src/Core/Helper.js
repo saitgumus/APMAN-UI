@@ -1,7 +1,7 @@
-import { getDateIsoDate} from "../Types/Common";
+import { getDateIsoDate } from "../Types/Common";
 import Alertify from "alertifyjs";
 
-export const StringBuilder = require("string-builder"); 
+export const StringBuilder = require("string-builder");
 
 /**
  * metin değerlerinin doluluğunu kontrol eder.
@@ -9,7 +9,20 @@ export const StringBuilder = require("string-builder");
  * @param {string} text kontrol edilecek metin
  */
 export function IsNullOrEmpty(text) {
-    return !(text && text.length > 0);
+  return !(text && text.length > 0);
+}
+/**
+ * array içerisindeki elemanların null kontrolü yapılır.
+ * @param {Array} params
+ */
+export function IsNullOrEmptyAll(params) {
+  if (params && params.length > 0) {
+    for (const item of params) {
+      if (IsNullOrEmpty(item)) return false;
+    }
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -19,7 +32,7 @@ export function IsNullOrEmpty(text) {
  * @constructor
  */
 export function IsValidObject(obj) {
-    return !!(obj && typeof obj === 'object');
+  return !!(obj && typeof obj === "object");
 }
 
 /**
@@ -30,20 +43,18 @@ export function IsValidObject(obj) {
  * @constructor
  */
 export function GetIntValue(value) {
-    if(value && typeof value === 'number'){
-        return parseInt(value);
+  if (value && typeof value === "number") {
+    return parseInt(value);
+  }
+  if (value && typeof value === "string") {
+    let val = -1;
+    try {
+      val = parseInt(value);
+      return val;
+    } catch (e) {
+      return -1;
     }
-    if(value && typeof value === 'string'){
-        let val = -1;
-        try {
-            val = parseInt(value);
-            return val;
-        }
-        catch (e) {
-            return -1;
-        }
-    }
-    else return -1;
+  } else return -1;
 }
 
 /**
@@ -54,13 +65,12 @@ export function GetIntValue(value) {
  * @constructor
  */
 export function DateControlOlderToday(value) {
-    // eslint-disable-next-line valid-typeof
- if(value && typeof value === 'date'){
-     let date = getDateIsoDate();
-     return value >= date;
-     
- }
- return false;
+  // eslint-disable-next-line valid-typeof
+  if (value && typeof value === "date") {
+    let date = getDateIsoDate();
+    return value >= date;
+  }
+  return false;
 }
 
 /**
@@ -70,12 +80,12 @@ export function DateControlOlderToday(value) {
  * @returns {boolean}
  * @constructor
  */
-export function IsBiggerDate(item1,item2) {
-    // eslint-disable-next-line valid-typeof
-    if(item1 && typeof item1 === 'date' && item2 && typeof item2 === 'date'){
-        return (item1 <= item2)
-    }
-    return false;
+export function IsBiggerDate(item1, item2) {
+  // eslint-disable-next-line valid-typeof
+  if (item1 && typeof item1 === "date" && item2 && typeof item2 === "date") {
+    return item1 <= item2;
+  }
+  return false;
 }
 
 /**
@@ -85,16 +95,16 @@ export function IsBiggerDate(item1,item2) {
  * @constructor
  */
 export function IsInvalidIndex(value) {
-    return (value === -1);
+  return value === -1;
 }
 
 /**
  * returned login user
- * @returns {any}
+ * @returns {User}
  * @constructor
  */
 export function GetActiveLocalUser() {
-    return JSON.parse(localStorage.getItem("user" || {}));
+  return JSON.parse(localStorage.getItem("user" || {}));
 }
 
 /**
@@ -103,9 +113,9 @@ export function GetActiveLocalUser() {
  * @constructor
  */
 export function GetMessage(propertyName) {
-    if(propertyName){
-        //mesaj servisi oluşturulacak.
-    }
+  if (propertyName) {
+    //mesaj servisi oluşturulacak.
+  }
 }
 
 //#region status messages
@@ -116,7 +126,7 @@ export function GetMessage(propertyName) {
  * @constructor
  */
 export function ShowStatusError(message) {
- Alertify.error(message);
+  Alertify.error(message);
 }
 /**
  * status'ta bilgi mesajı gösterir.
@@ -124,7 +134,7 @@ export function ShowStatusError(message) {
  * @constructor
  */
 export function ShowStatusInfo(message) {
-    Alertify.notify(message);
+  Alertify.notify(message);
 }
 /**
  * status'ta başarılı mesajı gösterir.
@@ -132,7 +142,7 @@ export function ShowStatusInfo(message) {
  * @constructor
  */
 export function ShowStatusSuccess(message) {
-    Alertify.success(message);
+  Alertify.success(message);
 }
 /**
  * status'ta uyarı mesajı gösterir.
@@ -140,6 +150,6 @@ export function ShowStatusSuccess(message) {
  * @constructor
  */
 export function ShowStatusWarning(message) {
-    Alertify.warning(message);
+  Alertify.warning(message);
 }
 //#endregion

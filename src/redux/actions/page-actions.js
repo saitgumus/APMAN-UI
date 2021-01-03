@@ -70,6 +70,19 @@ export function changeActiveResourceCode(resourceCode) {
         CommonTypes.Resources.ExpenseList.actionKeys
       );
       break;
+    // ihale kaydı
+    case CommonTypes.Resources.TenderDefining.resourceCode:
+      actionKeys.push.apply(
+        actionKeys,
+        CommonTypes.Resources.TenderDefining.actionKeys
+      );
+      break;
+    case CommonTypes.Resources.TenderListing.resourceCode:
+      actionKeys.push.apply(
+        actionKeys,
+        CommonTypes.Resources.TenderListing.actionKeys
+      );
+      break;
     default:
       break;
   }

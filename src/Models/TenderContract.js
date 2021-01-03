@@ -1,0 +1,35 @@
+export class TenderContract {
+  tenderId;
+  name;
+  apartmentId;
+  agreementId;
+  description;
+  userId;
+  beginDate;
+  endDate;
+  systemDate;
+  updateDate;
+  agreement;
+  userFullName;
+  apartmentName;
+  addressText;
+  cityName;
+  countyName;
+}
+
+export class AgreementContract {
+  agreementId;
+  subject;
+  description;
+  title;
+  content;
+  hash;
+}
+
+export class OfferContract {
+  offerId;
+  companyId;
+  tenderId;
+  offeredAmount;
+  systemDate;
+}

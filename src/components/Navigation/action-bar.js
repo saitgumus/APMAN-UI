@@ -10,6 +10,7 @@ import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew"; //kapat
 import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile"; // temizle
 import ImportContactsRoundedIcon from "@material-ui/icons/ImportContactsRounded"; // oku
 import FindInPageOutlinedIcon from "@material-ui/icons/FindInPageOutlined"; // incele
+import PostAddRoundedIcon from "@material-ui/icons/PostAddRounded"; // sözleşme ekle
 
 class ActionBar extends Component {
   getIcon = (key) => {
@@ -28,6 +29,8 @@ class ActionBar extends Component {
         return <ImportContactsRoundedIcon />;
       case CommonTypes.ActionKeys.Examine:
         return <FindInPageOutlinedIcon />;
+      case CommonTypes.ActionKeys.AddAgreement:
+        return <PostAddRoundedIcon />;
 
       default:
         break;

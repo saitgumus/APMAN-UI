@@ -25,8 +25,6 @@ export async function SaveExpense(expenseContract) {
   )
     .then((res) => {
       if (res.status === CommonTypes.ResponseStatusCode.successful.created) {
-        //todo: will set.
-        console.log("masraf girişi yapıldı.", expenseContract);
         returnObject.value = 1;
       } else if (res.data) {
         if (!res.data.success) {
@@ -35,7 +33,6 @@ export async function SaveExpense(expenseContract) {
       }
     })
     .catch((err) => {
-      console.log(err);
       returnObject.addResult(err.message);
     });
 
@@ -78,7 +75,6 @@ export async function GetExpenseDetail(invoiceId) {
   let ro = new Response();
   let contract = new InvoiceContract();
   contract.invoiceId = invoiceId;
-  console.log("gettinf invoice: ", invoiceId);
 
   let url = CommonTypes.GetUrlForAccount("expense", "getexpensedetail");
   // eslint-disable-next-line

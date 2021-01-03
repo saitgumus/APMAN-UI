@@ -7,6 +7,10 @@ import {
 } from "@material-ui/pickers";
 import { getDateIsoDate } from "../../Types/Common";
 
+/**
+ *
+ * @param {object} props
+ */
 export default function DateTimeComponent(props) {
   // The first commit of Material-UI
   const [selectedDate, setSelectedDate] = React.useState(getDateIsoDate());
