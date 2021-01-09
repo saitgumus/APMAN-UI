@@ -108,3 +108,31 @@ export async function GetTenderByApartment(contract) {
 
   return returnObject;
 }
+
+/**
+ * yeni teklif kaydı yapılır.
+ * @param {OfferContract} offerContract
+ */
+export async function SaveNewOffer(offerContract) {
+  let ro = new Response();
+  if (!offerContract) {
+    ro.addResult("Teklif bilgisi alınamadı.");
+  }
+  return await HttpClientServiceInstance.post(
+    CommonTypes.GetUrlForPurchasing("tender", "saveoffer"),
+    offerContract
+  )
+    .then((res) => {
+      if (!res || !res.data) ro.addResult("İşlem yapılamadı.");
+
+      if (res.data && res.data.success) {
+        ro.value = res.data.value;
+      } else {
+        ro.addCoreResults(res.data.results);
+      }
+      Promise.resolve(ro);
+    })
+    .catch((err) => {
+      Promise.reject(err);
+    });
+}

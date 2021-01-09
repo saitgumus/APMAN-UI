@@ -27,6 +27,7 @@
     "react": "^16.13.1",
     "react-alert": "^7.0.2",
     "react-alert-template-basic": "^1.0.0",
+    "react-countdown-circle-timer": "^2.3.7",
     "react-datasheet-grid": "^1.0.3",
     "react-dom": "^16.13.1",
     "react-google-login": "^5.1.22",

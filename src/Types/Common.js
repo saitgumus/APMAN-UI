@@ -97,6 +97,8 @@ export class CommonTypes {
     Read: "READ",
     /* sözleşme ekle */
     AddAgreement: "ADDAGR",
+    /*teklif ver */
+    GiveOffer: "GVOFFR",
   };
 
   /**
@@ -111,6 +113,7 @@ export class CommonTypes {
     list: "list",
     read: "read",
     examine: "examine",
+    giveoffer: "giveoffer",
   };
 
   /**
@@ -209,6 +212,7 @@ export class CommonTypes {
       actionKeys: [
         CommonTypes.ActionKeys.GetList,
         CommonTypes.ActionKeys.Examine,
+        CommonTypes.ActionKeys.GiveOffer,
       ],
     },
   };
@@ -266,6 +270,8 @@ export function getActionLabel(key) {
       return Messages.ActionNames.read;
     case CommonTypes.ActionKeys.AddAgreement:
       return "Sözleşme Ekle";
+    case CommonTypes.ActionKeys.GiveOffer:
+      return "Teklif Ver";
 
     default:
       return "action";

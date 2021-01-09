@@ -82,6 +82,10 @@ class TenderDefining extends Component {
           ShowStatusError("ihale başlangıç tarihi bugünden önce olmamalıdır.");
           return;
         }
+        if (this.state.datacontract.firstAmount < 1) {
+          ShowStatusError("Açılış tutarı giriniz.");
+          return;
+        }
 
         //#endregion
         let contract = new TenderContract();
@@ -165,6 +169,18 @@ class TenderDefining extends Component {
                   onChangeDate={(date) => {
                     var cont = { ...this.state.datacontract };
                     cont.endDate = date;
+                    this.setState({ datacontract: cont });
+                  }}
+                />
+              </Grid>
+              <Grid item>
+                <TextField
+                  label="Açılış Değeri"
+                  type="number"
+                  step="0.25"
+                  onChange={(e) => {
+                    var cont = { ...this.state.datacontract };
+                    cont.firstAmount = parseFloat(e.target.value);
                     this.setState({ datacontract: cont });
                   }}
                 />

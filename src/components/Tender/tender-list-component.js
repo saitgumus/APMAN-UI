@@ -1,25 +1,35 @@
 import {
+  Button,
   Card,
+  CardActions,
   CardContent,
   CardHeader,
   Grid,
   Paper,
+  TextField,
   Typography,
 } from "@material-ui/core";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { GetIntValue, ShowStatusError } from "../../Core/Helper";
-import { TenderContract } from "../../Models/TenderContract";
+import {
+  GetIntValue,
+  ShowStatusError,
+  ShowStatusSuccess,
+} from "../../Core/Helper";
+import { OfferContract, TenderContract } from "../../Models/TenderContract";
 import * as pageActions from "../../redux/actions/page-actions";
 import {
   GetTenderByApartment,
   GetTenderDetail,
+  SaveNewOffer,
 } from "../../Services/TenderService";
 import { CommonTypes } from "../../Types/Common";
 import ApartmentComponent from "../Common/apartment-component";
+import CountDownComponent from "../ToolBox/countdown";
 import DataTable from "../ToolBox/DataTable";
 import DialogForm from "../ToolBox/dialog-form";
+import SaveIcon from "@material-ui/icons/Save";
 
 class TenderList extends Component {
   columns = [
@@ -64,6 +74,8 @@ class TenderList extends Component {
       tenderDetail: null,
       selectedTender: {},
       isOpenDialogForm: false,
+      isOpenOfferDialog: false,
+      offerContract: new OfferContract(),
     };
   }
 
@@ -108,7 +120,7 @@ class TenderList extends Component {
 
         break;
       case CommonTypes.ActionKeys.Examine:
-        let tender = this.state.selectedTender;
+        var tender = this.state.selectedTender;
         if (!tender) {
           ShowStatusError("Kayıt seçiniz.");
           return;
@@ -131,12 +143,102 @@ class TenderList extends Component {
             return;
           });
         break;
+      case CommonTypes.ActionKeys.GiveOffer:
+        var tenderc = this.state.selectedTender;
+        if (!tenderc) {
+          ShowStatusError("Kayıt seçiniz.");
+          return;
+        }
+
+        GetTenderDetail(tenderc)
+          .then((res) => {
+            if (res && res.success) {
+              if (res.value) {
+                this.setOfferDialogContent(res.value);
+                this.handleOpenOfferDialog();
+              }
+            }
+          })
+          .catch((err) => {
+            ShowStatusError("İşlem gerçekleştirilemedi.");
+            return;
+          });
+        break;
       default:
         break;
     }
   };
+  onSaveOffer = () => {
+    ShowStatusError("metot oluşturulmadı.");
+    SaveNewOffer(this.state.offerContract)
+      .then((res) => {
+        if (res.success) {
+          ShowStatusSuccess("Teklif gönderildi.");
+        } else {
+          ShowStatusError(res.getResultsStringFormat());
+        }
+      })
+      .catch((err) => {
+        ShowStatusError("İşlem Başarısız.");
+      });
+  };
 
   dialogContent = (<p>no content..</p>);
+  offerDialogContent = (<p>no content..</p>);
+
+  setOfferDialogContent = (value) => {
+    this.offerDialogContent = (
+      <Card>
+        <CardHeader title={value.name} subheader={value.apartmentName} />
+        <CardContent>
+          <Grid container spacing={3} direction="column">
+            <Grid item>
+              <Paper elevation={2}>
+                <Typography>Kalan Zaman</Typography>
+                <CountDownComponent
+                  startTime={new Date(value.beginDate).getTime() / 1000}
+                  endTime={new Date(value.endDate).getTime() / 1000}
+                />
+              </Paper>
+            </Grid>
+            <Grid item>
+              <Typography>
+                Şimdiye kadar verilmiş en düşük teklif {value.minOffer} ₺'dir.
+              </Typography>
+            </Grid>
+            <Grid item>
+              <TextField
+                fullWidth
+                label="Teklif Tutarını Giriniz"
+                type="number"
+                step="0.10"
+                required
+                onChange={(e) => {
+                  var contract = { ...this.state.offerContract };
+                  contract.offeredAmount = parseFloat(e.target.value);
+                  this.setState({ offerContract: contract });
+                }}
+              />
+            </Grid>
+          </Grid>
+        </CardContent>
+        <CardActions>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<SaveIcon />}
+            onClick={(e) => {
+              this.onSaveOffer();
+              this.handleCloseOfferDialog();
+            }}
+          >
+            Kaydet
+          </Button>
+        </CardActions>
+      </Card>
+    );
+  };
+
   setDialogContent = (value) => {
     this.dialogContent = (
       <Card>
@@ -151,27 +253,32 @@ class TenderList extends Component {
             >
               <Grid item>
                 <Typography variant={"overline"}>
-                  Başlangıç Tarihi:{value.beginDate}
+                  Başlangıç Tarihi = {value.beginDate}
                 </Typography>
               </Grid>
               <Grid item>
                 <Typography variant={"overline"}>
-                  Bitiş Tarihi:{value.endDate}
+                  Bitiş Tarihi = {value.endDate}
                 </Typography>
               </Grid>
               <Grid item>
                 <Typography variant={"overline"}>
-                  Açıklama:{value.description}
+                  Açıklama = {value.description}
                 </Typography>
               </Grid>
               <Grid item>
                 <Typography variant={"overline"}>
-                  Şehir: {value.cityName}
+                  Şehir = {value.cityName}
                 </Typography>
               </Grid>
               <Grid item>
                 <Typography variant={"overline"}>
-                  İlçe: {value.countyName}
+                  İlçe = {value.countyName}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant={"overline"}>
+                  En İyi Teklif = {value.minOffer} ₺
                 </Typography>
               </Grid>
             </Grid>
@@ -216,6 +323,13 @@ class TenderList extends Component {
     this.setState({ isOpenDialogForm: true });
   };
 
+  handleCloseOfferDialog = () => {
+    this.setState({ isOpenOfferDialog: false });
+  };
+  handleOpenOfferDialog = () => {
+    this.setState({ isOpenOfferDialog: true });
+  };
+
   render() {
     return (
       <Grid container spacing={3}>
@@ -254,6 +368,15 @@ class TenderList extends Component {
               title={"Masraf Detayı"}
               content={this.dialogContent}
               handleClose={this.handleCloseDialog}
+            />
+          ) : (
+            <p></p>
+          )}
+          {this.state.isOpenOfferDialog ? (
+            <DialogForm
+              title={"Teklif Ekranı"}
+              content={this.offerDialogContent}
+              handleClose={this.handleCloseOfferDialog}
             />
           ) : (
             <p></p>
