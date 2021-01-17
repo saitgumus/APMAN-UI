@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import {
-  Container,
   Col,
   Form,
   FormGroup,
@@ -21,7 +20,7 @@ import {
   ShowStatusError,
   ShowStatusSuccess,
 } from "../../Core/Helper";
-import { Checkbox, FormControlLabel } from "@material-ui/core";
+import { Checkbox, FormControlLabel, Grid } from "@material-ui/core";
 import { ForgotPassword } from "../../Services/UserService";
 
 /*
@@ -45,20 +44,20 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    // this.props.actions.changeLoginStatus({
-    //   token: "",
-    //   expiration: new Date(),
-    //   isSuccess: false,
-    // });
-    //dev ortamı için otomatik login
-    this.props.actions.loginUser({
-      firstName: "Fatih",
-      lastName: "Gümüs",
-      userName: "",
-      email: "fatihgumus33@gmail.com",
-      password: "password",
-      memberId: 0,
+    this.props.actions.changeLoginStatus({
+      token: "",
+      expiration: new Date(),
+      isSuccess: false,
     });
+    //dev ortamı için otomatik login
+    // this.props.actions.loginUser({
+    //   firstName: "Fatih",
+    //   lastName: "Gümüs",
+    //   userName: "",
+    //   email: "fatihgumus33@gmail.com",
+    //   password: "password",
+    //   memberId: 0,
+    // });
   }
 
   validateEmail(e) {
@@ -121,90 +120,127 @@ class Login extends Component {
   render() {
     return (
       <div>
-        <Container className="App">
-          <Form className="form">
-            <Col>
-              <FormGroup>
-                <Label>{Messages.LabelNames.email}</Label>
-                <Input
-                  valid={this.state.validate.emailState === "has-success"}
-                  invalid={this.state.validate.emailState === "has-danger"}
-                  type="email"
-                  name="email"
-                  id="userEmail"
-                  autoComplete="username"
-                  placeholder=""
-                  onChange={(e) => {
-                    this.loginUserContract.email = e.target.value;
-                    var datac = this.state.dataContract;
-                    datac.Email = e.target.value;
-                    this.setState({ dataContract: datac });
-                  }}
-                  onBlur={(e) => this.validateEmail(e)}
-                />
-                <FormFeedback valid={true}> {Messages.EMailValid}</FormFeedback>
-                <FormFeedback invalid="true">
-                  {Messages.EMailInvalid}
-                </FormFeedback>
-              </FormGroup>
-            </Col>
-            <Col>
-              <FormGroup>
-                <Label for="userLoginPassword">
-                  {Messages.LabelNames.password}
-                </Label>
-                <Input
-                  type="password"
-                  name="password"
-                  id="userLoginPassword"
-                  autoComplete="current-password"
-                  onChange={(e) => {
-                    this.loginUserContract.password = e.target.value;
-                  }}
-                  disabled={this.state.isForgotPassword}
-                />
-              </FormGroup>
-            </Col>
-            <Col>
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onChange={(e) => {
-                        this.setState({ isForgotPassword: e.target.checked });
-                      }}
-                      checked={this.state.isForgotPassword}
-                      name="forgot"
-                    />
-                  }
-                  label="Parolamı Unuttum"
-                />
-              </FormGroup>
-            </Col>
-            <Button
-              color={"primary"}
-              onClick={(e) => {
-                if (this.state.isForgotPassword) this.onForgotPassword();
-                else {
-                  if (
-                    IsNullOrEmpty(this.loginUserContract.email) ||
-                    IsNullOrEmpty(this.loginUserContract.password)
-                  ) {
-                    ShowStatusError("Email ve parola alanlarını doldurunuz.");
-                    return;
-                  }
-                  this.props.actions.loginUser(this.loginUserContract);
-                }
-              }}
-            >
-              {this.state.isForgotPassword
-                ? "Doğrulama Kodu Al"
-                : Messages.ActionNames.enter}
-            </Button>
-          </Form>
-          <hr />
-          <GoogleLoginComponent />
-        </Container>
+        <Grid container spacing={3} alignItems="stretch" justify="center">
+          <Grid item style={{ marginTop: "20px" }} xs={4}>
+            <Grid item>
+              <Grid container direction="column" spacing={3}>
+                <Grid item>
+                  <Form className="form">
+                    <Col>
+                      <FormGroup>
+                        <Label>{Messages.LabelNames.email}</Label>
+                        <Input
+                          valid={
+                            this.state.validate.emailState === "has-success"
+                          }
+                          invalid={
+                            this.state.validate.emailState === "has-danger"
+                          }
+                          type="email"
+                          name="email"
+                          id="userEmail"
+                          autoComplete="username"
+                          placeholder=""
+                          onChange={(e) => {
+                            this.loginUserContract.email = e.target.value;
+                            var datac = this.state.dataContract;
+                            datac.Email = e.target.value;
+                            this.setState({ dataContract: datac });
+                          }}
+                          onBlur={(e) => this.validateEmail(e)}
+                        />
+                        <FormFeedback valid={true}>
+                          {" "}
+                          {Messages.EMailValid}
+                        </FormFeedback>
+                        <FormFeedback invalid="true">
+                          {Messages.EMailInvalid}
+                        </FormFeedback>
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        <Label for="userLoginPassword">
+                          {Messages.LabelNames.password}
+                        </Label>
+                        <Input
+                          type="password"
+                          name="password"
+                          id="userLoginPassword"
+                          autoComplete="current-password"
+                          onChange={(e) => {
+                            this.loginUserContract.password = e.target.value;
+                          }}
+                          disabled={this.state.isForgotPassword}
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              onChange={(e) => {
+                                this.setState({
+                                  isForgotPassword: e.target.checked,
+                                });
+                              }}
+                              checked={this.state.isForgotPassword}
+                              name="forgot"
+                            />
+                          }
+                          label="Parolamı Unuttum"
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        <Button
+                          color={"primary"}
+                          onClick={(e) => {
+                            if (this.state.isForgotPassword)
+                              this.onForgotPassword();
+                            else {
+                              if (
+                                IsNullOrEmpty(this.loginUserContract.email) ||
+                                IsNullOrEmpty(this.loginUserContract.password)
+                              ) {
+                                ShowStatusError(
+                                  "Email ve parola alanlarını doldurunuz."
+                                );
+                                return;
+                              }
+                              this.props.actions.loginUser(
+                                this.loginUserContract
+                              );
+                            }
+                          }}
+                        >
+                          {this.state.isForgotPassword
+                            ? "Doğrulama Kodu Al"
+                            : Messages.ActionNames.enter}
+                        </Button>
+                      </FormGroup>
+                    </Col>
+                  </Form>
+                </Grid>
+                <Grid item>
+                  <hr />
+                </Grid>
+                <Grid item>
+                  <GoogleLoginComponent />
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Grid item xs={6}>
+            <img
+              src={require("../../resources/images/group-business.jpg")}
+              alt="business"
+            />
+          </Grid>
+        </Grid>
       </div>
     );
   }

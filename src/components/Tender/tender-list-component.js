@@ -13,6 +13,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
+  GetActiveLocalUser,
   GetIntValue,
   ShowStatusError,
   ShowStatusSuccess,
@@ -22,6 +23,7 @@ import * as pageActions from "../../redux/actions/page-actions";
 import {
   GetTenderByApartment,
   GetTenderDetail,
+  GetTenderListAll,
   SaveNewOffer,
 } from "../../Services/TenderService";
 import { CommonTypes } from "../../Types/Common";
@@ -30,6 +32,8 @@ import CountDownComponent from "../ToolBox/countdown";
 import DataTable from "../ToolBox/DataTable";
 import DialogForm from "../ToolBox/dialog-form";
 import SaveIcon from "@material-ui/icons/Save";
+import CityComponent from "../Common/city-component";
+import CountyComponent from "../Common/county-component";
 
 class TenderList extends Component {
   columns = [
@@ -76,6 +80,9 @@ class TenderList extends Component {
       isOpenDialogForm: false,
       isOpenOfferDialog: false,
       offerContract: new OfferContract(),
+      isCorporateUser: false,
+      selectedCityId: 0,
+      selectedCountyId: 0,
     };
   }
 
@@ -90,34 +97,62 @@ class TenderList extends Component {
       this.props.actions.executeCommand(this.onExecute);
     }
     //#endregion
+    debugger;
+    let activeUser = GetActiveLocalUser();
+    if (activeUser && activeUser.isCorporateUser) {
+      this.setState({ isCorporateUser: true });
+    }
   }
 
   onExecute = async (key) => {
     switch (key) {
       case CommonTypes.ActionKeys.GetList:
-        if (GetIntValue(this.state.apartmentId) < 1) {
-          ShowStatusError("Apartman seçimi yapınız");
-          return;
-        }
-        let tenderContract = new TenderContract();
-        tenderContract.apartmentId = this.state.apartmentId;
-
-        GetTenderByApartment(tenderContract)
-          .then((res) => {
-            if (res && res.success) {
-              if (res.value && res.value.length > 0) {
+        debugger;
+        if (this.state.isCorporateUser) {
+          var filterContract = new TenderContract();
+          filterContract.cityId = this.state.selectedCityId;
+          filterContract.countyId = this.state.selectedCountyId;
+          GetTenderListAll(filterContract)
+            .then((res) => {
+              if (res.success) {
+                ShowStatusSuccess(
+                  res.value &&
+                    res.value.length.toString() + " adet kayıt getirildi."
+                );
                 this.setState({ dataList: res.value });
+              } else {
+                ShowStatusError(res.getResultsStringFormat());
               }
-            } else {
-              ShowStatusError("İhale listesi getirilemedi.");
-              return;
-            }
-          })
-          .catch((err) => {
-            ShowStatusError("İşlem başarısız oldu..");
-            return;
-          });
+            })
+            .catch((err) => {
+              ShowStatusError("İşlem başarısız.");
+            });
 
+          return;
+        } else {
+          if (GetIntValue(this.state.apartmentId) < 1) {
+            ShowStatusError("Apartman seçimi yapınız");
+            return;
+          }
+          let tenderContract = new TenderContract();
+          tenderContract.apartmentId = this.state.apartmentId;
+
+          GetTenderByApartment(tenderContract)
+            .then((res) => {
+              if (res && res.success) {
+                if (res.value && res.value.length > 0) {
+                  this.setState({ dataList: res.value });
+                }
+              } else {
+                ShowStatusError("İhale listesi getirilemedi.");
+                return;
+              }
+            })
+            .catch((err) => {
+              ShowStatusError("İşlem başarısız oldu..");
+              return;
+            });
+        }
         break;
       case CommonTypes.ActionKeys.Examine:
         var tender = this.state.selectedTender;
@@ -330,6 +365,17 @@ class TenderList extends Component {
     this.setState({ isOpenOfferDialog: true });
   };
 
+  onSelectedCity = (city) => {
+    if (city) {
+      this.setState({ selectedCityId: city.cityId });
+    }
+  };
+  onSelectedCounty = (county) => {
+    if (county) {
+      this.setState({ selectedCountyId: county.countyId });
+    }
+  };
+
   render() {
     return (
       <Grid container spacing={3}>
@@ -337,13 +383,24 @@ class TenderList extends Component {
           <Grid item>
             <Typography variant={"h6"}>Kriterler</Typography>
           </Grid>
-          <Grid item>
-            <ApartmentComponent
-              onChange={(val) => {
-                this.setState({ apartmentId: val.apartmentId });
-              }}
-            />
-          </Grid>
+          {!this.state.isCorporateUser ? (
+            <Grid item>
+              <ApartmentComponent
+                onChange={(val) => {
+                  this.setState({ apartmentId: val.apartmentId });
+                }}
+              />
+            </Grid>
+          ) : (
+            <React.Fragment>
+              <Grid item>
+                <CityComponent />
+              </Grid>
+              <Grid item>
+                <CountyComponent />
+              </Grid>
+            </React.Fragment>
+          )}
         </Grid>
         {/*data table*/}
         <Grid item xs={9}>

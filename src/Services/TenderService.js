@@ -110,6 +110,37 @@ export async function GetTenderByApartment(contract) {
 }
 
 /**
+ * ihale listesi getirir.
+ * @param {{cityId,countyId}} filterContract
+ */
+export async function GetTenderListAll(filterContract) {
+  let ro = new Response();
+
+  return await HttpClientServiceInstance.post(
+    CommonTypes.GetUrlForPurchasing("tender", "gettenderall"),
+    { ...filterContract }
+  )
+    .then((res) => {
+      if (res && res.data) {
+        var responseData = res.data;
+
+        if (responseData.success) {
+          ro.value = responseData.value;
+          return ro;
+        } else {
+          ro.addCoreResults(responseData.results);
+          return ro;
+        }
+      } else {
+        return ro;
+      }
+    })
+    .catch((err) => {
+      return ro;
+    });
+}
+
+/**
  * yeni teklif kaydı yapılır.
  * @param {OfferContract} offerContract
  */

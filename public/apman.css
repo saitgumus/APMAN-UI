@@ -1,6 +1,7 @@
 .google-login-div {
   margin: 2%;
-  alignment: center;
+  align-items: center;
+  align-self: center;
 }
 
 .apman-layout-root {

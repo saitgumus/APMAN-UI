@@ -18,6 +18,10 @@ export default class User {
 
   //parola değişikliği gerekiyor!
   shouldNewPassword;
+
+  // kurumsal
+  isCorporateUser;
+  company;
 }
 
 export class Subscription {

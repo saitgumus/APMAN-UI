@@ -17,6 +17,9 @@ export class TenderContract {
   countyName;
   minOffer;
   firstAmount;
+
+  cityId;
+  countyId;
 }
 
 export class AgreementContract {

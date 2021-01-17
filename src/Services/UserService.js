@@ -33,6 +33,7 @@ export async function LoginUser(userContract) {
           );
           response.value = { shouldNewPassword: true };
         } else {
+          debugger;
           let userData = res.data.value.userDefinitionContract;
 
           let user = new User();
@@ -41,6 +42,11 @@ export async function LoginUser(userContract) {
           user.firstName = userData.firstName;
           user.lastName = userData.lastName;
           user.userName = userData.userName;
+
+          if (res.data.value.companyContract) {
+            user.isCorporateUser = true;
+            user.company = { ...res.data.value.companyContract };
+          }
 
           user.token = res.data.value.accessToken.token;
           user.expiration = res.data.value.accessToken.expiration;
@@ -255,4 +261,34 @@ function SetUserResources(resourceActions) {
     }
     Cache.overrideItem("resources", resourceList);
   }
+}
+/**
+ * kurum kullanıcı kaydı
+ * @param {Company} companyContract
+ */
+export async function RegisterCompany(companyContract) {
+  let ro = new Response();
+
+  return await HttpClientServiceInstance.post(
+    CommonTypes.GetUrlForAPI("user", "savecompany"),
+    companyContract
+  )
+    .then((res) => {
+      if (!res && !res.data) {
+        ro.addResult("Kullanıcı oluşturulamadı.");
+        return ro;
+      } else {
+        if (res.data && res.data.success) {
+          ro.value = res.data.value;
+          return ro;
+        } else {
+          ro.addCoreResults(res.data.results);
+          return ro;
+        }
+      }
+    })
+    .catch((err) => {
+      ro.addResult("İşlem gerçekleştirilemedi.");
+      return ro;
+    });
 }

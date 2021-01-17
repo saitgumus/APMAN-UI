@@ -1,5 +1,5 @@
 import { Grid } from "@material-ui/core";
-import React, { useState } from "react";
+import React from "react";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 
 const minuteSeconds = 60;
