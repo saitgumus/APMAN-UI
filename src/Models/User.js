@@ -8,6 +8,8 @@ export default class User {
   MemberId;
   token;
   expiration;
+  //kullanıcı apartman bilgisi
+  apartment;
   //üyelik paketi
   subscription;
   //bildirim

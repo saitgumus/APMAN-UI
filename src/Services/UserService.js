@@ -33,7 +33,6 @@ export async function LoginUser(userContract) {
           );
           response.value = { shouldNewPassword: true };
         } else {
-          debugger;
           let userData = res.data.value.userDefinitionContract;
 
           let user = new User();
@@ -48,6 +47,9 @@ export async function LoginUser(userContract) {
             user.company = { ...res.data.value.companyContract };
           }
 
+          if (res.data.value.apartmentContract) {
+            user.apartment = res.data.value.apartmentContract;
+          }
           user.token = res.data.value.accessToken.token;
           user.expiration = res.data.value.accessToken.expiration;
           HttpClientServiceInstance.setTokenOnLogin(user.token);

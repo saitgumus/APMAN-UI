@@ -13,6 +13,7 @@ import ExpenseEntry from "./components/Accounting/expense-entry";
 import ExpenseList from "./components/Accounting/expense-list";
 import TenderDefining from "./components/Tender/tender-defining-component";
 import TenderList from "./components/Tender/tender-list-component";
+import DuesPayment from "./components/Accounting/dues-payment";
 
 export default class App extends Component {
   static displayName = App.name;
@@ -36,6 +37,7 @@ export default class App extends Component {
           <Route path="/accounting/expense-list" component={ExpenseList} />
           <Route path="/tender/tenderdefining" component={TenderDefining} />
           <Route path="/tender/tenderlist" component={TenderList} />
+          <Route path="/accounting/dues-payment" component={DuesPayment} />
         </Switch>
       </Layout>
     );

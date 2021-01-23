@@ -71,6 +71,8 @@ function Layout(props) {
   );
 }
 
+//#region redux
+
 function mapDispatchToProps(dispatch) {
   return {
     actions: {
@@ -89,3 +91,5 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Layout);
+
+//#endregion

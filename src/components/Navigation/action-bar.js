@@ -11,6 +11,7 @@ import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile"; // temizle
 import ImportContactsRoundedIcon from "@material-ui/icons/ImportContactsRounded"; // oku
 import FindInPageOutlinedIcon from "@material-ui/icons/FindInPageOutlined"; // incele
 import PostAddRoundedIcon from "@material-ui/icons/PostAddRounded"; // sözleşme ekle
+import AttachFileRoundedIcon from "@material-ui/icons/AttachFileRounded"; // döküman
 
 class ActionBar extends Component {
   getIcon = (key) => {
@@ -31,6 +32,8 @@ class ActionBar extends Component {
         return <FindInPageOutlinedIcon />;
       case CommonTypes.ActionKeys.AddAgreement:
         return <PostAddRoundedIcon />;
+      case CommonTypes.ActionKeys.Divit:
+        return <AttachFileRoundedIcon />;
 
       default:
         break;

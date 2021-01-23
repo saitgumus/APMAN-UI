@@ -83,6 +83,12 @@ export function changeActiveResourceCode(resourceCode) {
         CommonTypes.Resources.TenderListing.actionKeys
       );
       break;
+    case CommonTypes.Resources.DuesPayment.resourceCode:
+      actionKeys.push.apply(
+        actionKeys,
+        CommonTypes.Resources.DuesPayment.actionKeys
+      );
+      break;
     default:
       break;
   }

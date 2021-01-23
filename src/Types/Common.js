@@ -99,6 +99,8 @@ export class CommonTypes {
     AddAgreement: "ADDAGR",
     /*teklif ver */
     GiveOffer: "GVOFFR",
+    /**döküman ekle */
+    Divit: "DIVIT",
   };
 
   /**
@@ -215,6 +217,13 @@ export class CommonTypes {
         CommonTypes.ActionKeys.GiveOffer,
       ],
     },
+    /**
+     * aidat ödeme
+     */
+    DuesPayment: {
+      resourceCode: "DUESPY",
+      actionKeys: [CommonTypes.ActionKeys.Divit, CommonTypes.ActionKeys.Save],
+    },
   };
 
   /**
@@ -272,6 +281,8 @@ export function getActionLabel(key) {
       return "Sözleşme Ekle";
     case CommonTypes.ActionKeys.GiveOffer:
       return "Teklif Ver";
+    case CommonTypes.ActionKeys.Divit:
+      return "Divit";
 
     default:
       return "action";

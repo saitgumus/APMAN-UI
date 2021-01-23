@@ -50,14 +50,14 @@ class Login extends Component {
       isSuccess: false,
     });
     //dev ortamı için otomatik login
-    // this.props.actions.loginUser({
-    //   firstName: "Fatih",
-    //   lastName: "Gümüs",
-    //   userName: "",
-    //   email: "fatihgumus33@gmail.com",
-    //   password: "password",
-    //   memberId: 0,
-    // });
+    this.props.actions.loginUser({
+      firstName: "Fatih",
+      lastName: "Gümüs",
+      userName: "",
+      email: "fatihgumus33@gmail.com",
+      password: "password",
+      memberId: 0,
+    });
   }
 
   validateEmail(e) {

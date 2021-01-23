@@ -21,6 +21,7 @@
     "kafka-node": "^5.0.0",
     "kafkajs": "^1.14.0",
     "lru-cache": "^6.0.0",
+    "material-ui-dropzone": "^3.5.0",
     "mui-datatables": "^3.6.0",
     "prop-types": "^15.6.2",
     "random-color-generator2": "^1.2.0",
