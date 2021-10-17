@@ -2,6 +2,7 @@
   "name": "apman",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://saitgumus.github.io/apman-ui",
   "dependencies": {
     "@date-io/date-fns": "^1.3.13",
     "@material-ui/core": "^4.11.0",
@@ -17,6 +18,7 @@
     "bootstrap": "^4.1.3",
     "date-fns": "^2.16.1",
     "dateformat": "^3.0.3",
+    "gh-pages": "^3.2.3",
     "jquery": "^3.4.1",
     "kafka-node": "^5.0.0",
     "kafkajs": "^1.14.0",
@@ -58,6 +60,8 @@
     "typescript": "^3.7.5"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
