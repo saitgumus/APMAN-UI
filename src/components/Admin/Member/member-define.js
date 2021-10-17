@@ -163,6 +163,7 @@ class MemberDefine extends Component {
               .then((res) => {
                 if (res.status === 201) {
                   ShowStatusSuccess("Yeni üye kaydı yapıldı.");
+                  this.props.history.push({ pathname: "/" });
                 }
               })
               .catch((e) => console.log(e))
@@ -218,7 +219,8 @@ class MemberDefine extends Component {
   }
 
   validateEmail(e) {
-    const emailRex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const emailRex =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let isValid = this.state.isMailValid;
     isValid = !emailRex.test(e.target.value);
     this.setState({ isMailValid: isValid });

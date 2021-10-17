@@ -1,18 +1,22 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Button, Grid, TextField, Typography } from "@material-ui/core";
+import { Grid, TextField, Typography } from "@material-ui/core";
 import { DuesContract } from "../../Models/DuesContract";
 import {
   GetActiveLocalUser,
   ShowStatusError,
-  ShowStatusInfo,
+  ShowStatusSuccess,
 } from "../../Core/Helper";
 import DivitComponent from "../Common/divit-component";
 import { CommonTypes } from "../../Types/Common";
 import { bindActionCreators } from "redux";
 import * as pageActions from "../../redux/actions/page-actions";
+import { SendDuesPayment } from "../../Services/Accounting";
 
+/**
+ * aidat ödeme ekranı
+ */
 export class DuesPayment extends Component {
   static propTypes = {
     prop: PropTypes.any,
@@ -43,18 +47,11 @@ export class DuesPayment extends Component {
     }
 
     let user = GetActiveLocalUser();
-    //todo: testlerden önce kaldır..
-    user = {
-      apartment: {
-        apartmentId: 1,
-        apartmentName: "apartman test",
-        duesAmount: 50.5,
-      },
-    };
+
     if (user.apartment) {
       let contract = { ...this.state.dataContract };
       contract.apartmentId = user.apartment.apartmentId;
-      contract.apartmentName = user.apartment.apartmentName;
+      contract.apartmentName = user.apartment.name;
       this.setState({
         dataContract: contract,
         apartmentDues: user.apartment.duesAmount,
@@ -67,19 +64,33 @@ export class DuesPayment extends Component {
       case CommonTypes.ActionKeys.Divit:
         this.setState({ isOpenDivit: true });
         break;
+
       case CommonTypes.ActionKeys.Save:
         if (
           !this.state.divitContract.size ||
           this.state.divitContract.size < 1
         ) {
           ShowStatusError("Döküman ekleyiniz.");
+          return;
         }
 
         let duesContract = new DuesContract();
         duesContract = { ...this.state.dataContract };
         duesContract.divitContract = { ...this.state.divitContract };
 
-        console.log(duesContract);
+        SendDuesPayment(duesContract)
+          .then((res) => {
+            if (res.success) {
+              ShowStatusSuccess("Aidat ödemeniz onaya gönderilmiştir.");
+              return;
+            } else {
+              ShowStatusError(res.getResultsStringFormat());
+            }
+          })
+          .catch((err) => {
+            ShowStatusError("İşlem gerçekleştirilemedi.");
+          });
+
         break;
       default:
         break;
@@ -105,7 +116,9 @@ export class DuesPayment extends Component {
         <Grid item>
           <TextField
             label="Apartman adı"
-            value={this.state.dataContract.apartmentName}
+            value={
+              this.state.dataContract && this.state.dataContract.apartmentName
+            }
             onChange={(e) => {
               this.setState({
                 dataContract: {
@@ -131,16 +144,6 @@ export class DuesPayment extends Component {
             disabled
             fullWidth
           />
-        </Grid>
-        <Grid item>
-          <Button
-            color="primary"
-            onClick={(e) => {
-              this.onDivitAction();
-            }}
-          >
-            Gönder
-          </Button>
         </Grid>
         <Grid item>
           {this.state.isOpenDivit && (

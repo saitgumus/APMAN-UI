@@ -137,7 +137,7 @@ class VoteDefining extends Component {
         style={{ maxWidth: "700px" }}
       >
         <Grid item xs={12} sm={12}>
-          <Paper elevation={1}>
+          <Paper elevation={0}>
             <ComboBox
               label={"Apartman"}
               onSelectedItemChange={(item) => {
@@ -162,7 +162,7 @@ class VoteDefining extends Component {
           </Paper>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <Paper elevation={1}>
+          <Paper elevation={0}>
             <TextField
               fullWidth
               type="text"
@@ -177,7 +177,7 @@ class VoteDefining extends Component {
           </Paper>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <Paper elevation={1}>
+          <Paper elevation={0}>
             <TextField
               fullWidth
               type="text"
@@ -191,7 +191,7 @@ class VoteDefining extends Component {
           </Paper>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <Paper elevation={1}>
+          <Paper elevation={0}>
             <TextField
               fullWidth
               type="date"
@@ -206,7 +206,7 @@ class VoteDefining extends Component {
           </Paper>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <Paper elevation={1}>
+          <Paper elevation={0}>
             <TextField
               fullWidth
               type="date"
@@ -223,7 +223,7 @@ class VoteDefining extends Component {
 
         {/*oy pusulası*/}
         <Grid item xs={12} sm={12}>
-          <Paper elevation={1}>
+          <Paper elevation={0}>
             <DynamicList
               title={"Anket Seçenekleri"}
               onChangeList={(list) => {

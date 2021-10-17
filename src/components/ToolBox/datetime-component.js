@@ -13,7 +13,7 @@ import { getDateIsoDate } from "../../Types/Common";
  */
 export default function DateTimeComponent(props) {
   // The first commit of Material-UI
-  const [selectedDate, setSelectedDate] = React.useState(getDateIsoDate());
+  const [selectedDate, setSelectedDate] = React.useState(props.defaultDate ? props.defaultDate:getDateIsoDate());
 
   const handleDateChange = (date) => {
     setSelectedDate(date);

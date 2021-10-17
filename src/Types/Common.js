@@ -5,9 +5,11 @@ const dateFormat = require("dateformat");
  * common types for general components
  */
 export class CommonTypes {
-  static URLaddress = "https://localhost:5001"; //23163 - api, 5001 - gateway
-  static KafkaHost = "localhost:9092";
+  static URLaddress = "http://167.172.180.44:5001"; //23163 - api, 5001 - gateway
+  static KafkaHost = "http://167.172.180.44:9092";
   static KafkaTopic = "apmantest";
+  static RabbitMQ = "http://167.172.180.44:5672";
+  static RabbitMQTopicName = "apman-client";
 
   /**
    *
@@ -54,6 +56,13 @@ export class CommonTypes {
     personadd: "personadd",
     viewlist: "viewlist",
     howtovote: "howtovote",
+    home: "home",
+    addChart: "addchart",
+    listChart: "listchart",
+    paydue: "paydue",
+    updown: "updown",
+    profile: "profile",
+    apartment: "apartment",
   };
 
   /**
@@ -201,10 +210,7 @@ export class CommonTypes {
      */
     TenderDefining: {
       resourceCode: "TNRDEF",
-      actionKeys: [
-        CommonTypes.ActionKeys.Save,
-        CommonTypes.ActionKeys.AddAgreement,
-      ],
+      actionKeys: [CommonTypes.ActionKeys.Save],
     },
     /**
      * ihale listeleme
@@ -223,6 +229,16 @@ export class CommonTypes {
     DuesPayment: {
       resourceCode: "DUESPY",
       actionKeys: [CommonTypes.ActionKeys.Divit, CommonTypes.ActionKeys.Save],
+    },
+    /**
+     * aidat listeleme
+     */
+    DuesListing: {
+      resourceCode: "DUESLS",
+      actionKeys: [
+        CommonTypes.ActionKeys.GetList,
+        CommonTypes.ActionKeys.Examine,
+      ],
     },
   };
 

@@ -44,11 +44,11 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    this.props.actions.changeLoginStatus({
-      token: "",
-      expiration: new Date(),
-      isSuccess: false,
-    });
+    // this.props.actions.changeLoginStatus({
+    //   token: "",
+    //   expiration: new Date(),
+    //   isSuccess: false,
+    // });
     //dev ortamı için otomatik login
     this.props.actions.loginUser({
       firstName: "Fatih",
@@ -61,7 +61,8 @@ class Login extends Component {
   }
 
   validateEmail(e) {
-    const emailRex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const emailRex =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const { validate } = this.state;
     if (emailRex.test(e.target.value)) {
       validate.emailState = "has-success";
@@ -70,24 +71,6 @@ class Login extends Component {
     }
     this.setState({ validate });
   }
-
-  // isLogin = () => {
-  //   let user = this.props.userContract;
-  //   if (user.token && user.token.length > 1) {
-  //     let lclUser = window.localStorage.getItem("user");
-  //     if (lclUser || lclUser.token) {
-  //       this.props.actions.changeLoginStatus({
-  //         token: user.token,
-  //         expiration: user.expiration,
-  //         isSuccess: true,
-  //       });
-
-  //       ShowStatusSuccess("Giriş yapıldı..");
-  //     }
-  //   } else {
-  //     ShowStatusError("hatalı kullanıcı adı veya parola girdiniz.");
-  //   }
-  // };
 
   onForgotPassword = async () => {
     let user = this.state.dataContract;

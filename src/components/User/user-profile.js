@@ -5,6 +5,7 @@ import CardHeader from "@material-ui/core/CardHeader";
 import Avatar from "@material-ui/core/Avatar";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
+import {GetActiveLocalUser} from "../../Core/Helper";
 
 function mapStateToProps(state) {
     return {};
@@ -14,7 +15,7 @@ class UserProfile extends Component {
     
     
     render() {
-        let user = JSON.parse(localStorage.getItem("user" || {}));
+        let user = GetActiveLocalUser();
         
         return (
             <div>
@@ -30,14 +31,15 @@ class UserProfile extends Component {
                     />
                     <CardContent>
                         <Typography variant="body1" color="textSecondary" component="p">
-                            kişi hakkında bilgi, cümleler, alıntı, özdeyiş :D
+                            {/*kişi hakkında bilgi, cümleler, alıntı, özdeyiş :D*/}
                         </Typography>
 
                         <Typography variant="body1" color="textPrimary" component="p">
                             <b>Ad:</b> {user.firstName} <br/>
                             <b>Soyad:</b> {user.lastName} <br/>
                             <b>Kullanıcı Adı:</b> {user.userName} <br/>
-                            <b>Email:</b> {user.email}
+                            <b>Email:</b> {user.email} <br/>
+                            <b>Apartman:</b> {user.apartment && user.apartment.name}
                         </Typography>
 
                     </CardContent>

@@ -89,6 +89,25 @@ export function IsBiggerDate(item1, item2) {
 }
 
 /**
+ * bir ay öncesini verir
+ * @param date {Date}
+ * @returns {Date}
+ * @constructor
+ */
+export function GetOneMonthAgo(date = new Date()){
+  
+  if(date.getMonth() === 0){
+    var year = date.getFullYear()-1;
+    date.setFullYear(year);
+    date.setMonth(11);
+  }else{
+    var month = date.getMonth()-1;
+    date.setMonth(month);
+  }
+  return date;
+}
+
+/**
  * is value -1 ? true:
  * @param value
  * @returns {boolean}

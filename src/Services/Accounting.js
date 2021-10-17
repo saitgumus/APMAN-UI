@@ -4,6 +4,12 @@ import { HttpClientServiceInstance } from "./HttpClient";
 import { GetActiveLocalUser } from "../Core/Helper";
 import { InvoiceContract } from "../Models/Invoice";
 
+/**
+ * Masraf giriş kaydı yapılır.
+ * @param expenseContract
+ * @returns {Promise<Response>}
+ * @constructor
+ */
 export async function SaveExpense(expenseContract) {
   const returnObject = new Response();
   let user = GetActiveLocalUser();
@@ -95,4 +101,77 @@ export async function GetExpenseDetail(invoiceId) {
     })
     .finally(() => {});
   return ro;
+}
+
+/**
+ * aidat ödeme işlemi yapılır.
+ * @param {DuesContract} duesContract
+ * @returns {Promise<T|Response>}
+ * @constructor
+ */
+export async function SendDuesPayment(duesContract) {
+ let ro = new Response();
+ let user = GetActiveLocalUser();
+ duesContract.userId = user.userId;
+
+ return await HttpClientServiceInstance.post(
+     CommonTypes.GetUrlForAccount("dues","paydues"),
+     duesContract
+ ).then(
+     res => {
+         let data = res && res.data;
+         if(data){
+             if(data.success){
+                 ro.value = data.value;
+             }else{
+                 ro.addCoreResults(data.results);
+             }
+         }else{
+             ro.addResult("İşlem gerçekleştirilemedi.",Severity.Low);
+         }
+         return ro;
+     }
+ ).catch(
+     err => {
+         console.error(err);
+         return ro;
+     }
+ )
+}
+
+/**
+ * aidat listesi getirir.
+ * @param {DuesContract} filterContract
+ * @returns {Promise<T|Response>}
+ * @constructor
+ */
+export async function GetDuesList(filterContract) {
+ let ro = new Response();
+ 
+ return await HttpClientServiceInstance.post(
+     CommonTypes.GetUrlForAccount("dues","getdueslist"),
+     filterContract
+ ).then(
+     res => {
+         let data = res.data;
+         if(data){
+             if(data.success){
+                 ro.value = data.value;
+                 return ro;
+             }else{
+                 ro.addCoreResults(data.results);
+                 return ro;
+             }
+         }else{
+             ro.addResult("Liste alınamadı.");
+             return ro;
+         }
+     }
+ ).catch(
+     e => {
+         console.log(e);
+         ro.addResult("liste alınamadı");
+         return ro;
+     }
+ )
 }

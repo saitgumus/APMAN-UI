@@ -170,10 +170,10 @@ function AppBarMenu(props) {
   //initial user
 
   let tmpusr = GetActiveLocalUser();
-  console.log("app-bar tmp user = ", tmpusr);
+  console.log("app-bar kullanıcı = ", tmpusr);
 
-  console.log("cache", Cache.getItem("resources"));
   let cacheResources = Cache.getItem("resources");
+  console.log("kaynak listesi (cache) = ", cacheResources);
 
   //drawer
   const theme = useTheme();
@@ -392,6 +392,16 @@ function AppBarMenu(props) {
           </IconButton>
         </div>
         <Divider />
+        <Accordion>
+          <AccordionDetails>
+            <List>
+              <ListItem button component={Link} to={"/"}>
+                <ListItemIcon>{GetIcon("home")}</ListItemIcon>
+                <ListItemText primary={"Ana Sayfa"} />
+              </ListItem>
+            </List>
+          </AccordionDetails>
+        </Accordion>
         {cacheResources && cacheResources.length > 0 ? (
           cacheResources.map((val, ind) => {
             return (

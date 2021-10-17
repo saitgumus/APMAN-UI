@@ -77,16 +77,25 @@ export function changeActiveResourceCode(resourceCode) {
         CommonTypes.Resources.TenderDefining.actionKeys
       );
       break;
+      // ihale listeleme
     case CommonTypes.Resources.TenderListing.resourceCode:
       actionKeys.push.apply(
         actionKeys,
         CommonTypes.Resources.TenderListing.actionKeys
       );
       break;
+      // aidat ödeme
     case CommonTypes.Resources.DuesPayment.resourceCode:
       actionKeys.push.apply(
         actionKeys,
         CommonTypes.Resources.DuesPayment.actionKeys
+      );
+      break;
+      // aidat listeleme
+    case CommonTypes.Resources.DuesListing.resourceCode:
+      actionKeys.push.apply(
+          actionKeys,
+          CommonTypes.Resources.DuesListing.actionKeys
       );
       break;
     default:

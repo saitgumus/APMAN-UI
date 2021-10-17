@@ -9,22 +9,26 @@ function mapStateToProps(state) {
 }
 
 class BackdropComponent extends Component {
-    
+
     constructor(props) {
         super(props);
         this.state = {
-            open : false
+            open: false
         }
     }
-    
-    
+
+
     render() {
         return (
             <React.Fragment>
                 <Backdrop
                     open={!!(this.props.backdropStatus && this.props.backdropStatus === true)}
+                    
+                    style={{
+                        zIndex:100
+                    }}
                 >
-                    <CircularProgress color="secondary" />
+                    <CircularProgress color={"primary"}/>
                 </Backdrop>
             </React.Fragment>
         );
