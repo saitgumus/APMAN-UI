@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.js": "/apman-ui/static/js/main.eda4f97a.chunk.js",
+    "main.js.map": "/apman-ui/static/js/main.eda4f97a.chunk.js.map",
+    "runtime-main.js": "/apman-ui/static/js/runtime-main.7e8d0ff1.js",
+    "runtime-main.js.map": "/apman-ui/static/js/runtime-main.7e8d0ff1.js.map",
+    "static/css/2.0a55030d.chunk.css": "/apman-ui/static/css/2.0a55030d.chunk.css",
+    "static/js/2.d149a916.chunk.js": "/apman-ui/static/js/2.d149a916.chunk.js",
+    "static/js/2.d149a916.chunk.js.map": "/apman-ui/static/js/2.d149a916.chunk.js.map",
+    "index.html": "/apman-ui/index.html",
+    "precache-manifest.e591e97b1ef77f260871a780e869e231.js": "/apman-ui/precache-manifest.e591e97b1ef77f260871a780e869e231.js",
+    "service-worker.js": "/apman-ui/service-worker.js",
+    "static/css/2.0a55030d.chunk.css.map": "/apman-ui/static/css/2.0a55030d.chunk.css.map",
+    "static/js/2.d149a916.chunk.js.LICENSE.txt": "/apman-ui/static/js/2.d149a916.chunk.js.LICENSE.txt",
+    "static/media/company-concept-illustration_114360-2581.jpg": "/apman-ui/static/media/company-concept-illustration_114360-2581.7c0026da.jpg",
+    "static/media/group-business.jpg": "/apman-ui/static/media/group-business.98771346.jpg",
+    "static/media/individual.jpg": "/apman-ui/static/media/individual.e5384646.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.7e8d0ff1.js",
+    "static/css/2.0a55030d.chunk.css",
+    "static/js/2.d149a916.chunk.js",
+    "static/js/main.eda4f97a.chunk.js"
+  ]
+}
