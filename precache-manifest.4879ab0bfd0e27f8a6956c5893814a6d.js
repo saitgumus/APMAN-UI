@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "f207b8c861db37a463bf388a1038ca89",
+    "revision": "ee2b29cc2ebb8adf34a4de5f450ae251",
     "url": "/apman-ui/index.html"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/apman-ui/static/js/2.d149a916.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "028937049fd930729f33",
-    "url": "/apman-ui/static/js/main.80016297.chunk.js"
+    "revision": "4fba67fdc3cba0b8c697",
+    "url": "/apman-ui/static/js/main.f0006ae6.chunk.js"
   },
   {
     "revision": "62acfaf9d9cec9634b58",
