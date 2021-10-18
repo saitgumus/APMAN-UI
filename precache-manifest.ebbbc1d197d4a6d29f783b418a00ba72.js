@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "2a02fdab2d7c4b2aaa0635454583ef52",
+    "revision": "3b58b839638a0cff7a685745b1f44afa",
     "url": "/apman-ui/index.html"
   },
   {
