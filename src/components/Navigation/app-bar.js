@@ -306,7 +306,7 @@ function AppBarMenu(props) {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            APMAN
+            APMAN - Beta1
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
